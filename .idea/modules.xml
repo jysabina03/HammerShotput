@@ -3,6 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../Drill10/.idea/Drill10.iml" filepath="$PROJECT_DIR$/../Drill10/.idea/Drill10.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Drill12/.idea/Drill12.iml" filepath="$PROJECT_DIR$/../Drill12/.idea/Drill12.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Drill13/.idea/Drill13.iml" filepath="$PROJECT_DIR$/../Drill13/.idea/Drill13.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Drill13-1/.idea/Drill13-1.iml" filepath="$PROJECT_DIR$/../Drill13-1/.idea/Drill13-1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Drill14/.idea/Drill14.iml" filepath="$PROJECT_DIR$/../Drill14/.idea/Drill14.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/HammerShotput.iml" filepath="$PROJECT_DIR$/.idea/HammerShotput.iml" />
     </modules>
   </component>
