@@ -1,4 +1,4 @@
-from pico2d import load_image
+from pico2d import load_image, get_time
 from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_SPACE
 
 
@@ -36,7 +36,7 @@ def end_turn(e):
 class Idle:
     # 화면에 나오지 않는 상태
     @staticmethod
-    def enter(player):
+    def enter(player,e):
 
         player.hammer_angle=0
         player.hammer_charge=0
@@ -47,7 +47,7 @@ class Idle:
         print('Set_angle Idle')
 
     @staticmethod
-    def exit(player):
+    def exit(player,e):
         print('Set_angle Idle')
 
     @staticmethod
@@ -61,13 +61,13 @@ class Idle:
 
 class Set_angle:    # 0. 각도조절
     @staticmethod
-    def enter(player):
+    def enter(player,e):
         player.action=0
         player.frame = 0
         print('Set_angle Enter')
 
     @staticmethod
-    def exit(player):
+    def exit(player,e):
         print('Set_angle Exit')
 
     @staticmethod
@@ -84,20 +84,23 @@ class Set_angle:    # 0. 각도조절
 
 class Charging:    # 1. 좌우연타차징
     @staticmethod
-    def enter(player):
+    def enter(player,e):
         player.action=1
         player.frame = 0
         player.forward = 0
+        player.charge_time = get_time()
         print('Charging Enter')
 
     @staticmethod
-    def exit(player):
+    def exit(player,e):
 
         print('Charging Exit')
 
     @staticmethod
     def do(player):
         player.frame = (player.frame+1)%8
+        if get_time() - player.charge_time > 5:
+            player.state_machine.handle_event(('TIME_OUT',0))
         pass
 
     @staticmethod
@@ -108,13 +111,13 @@ class Charging:    # 1. 좌우연타차징
 
 class Timing:    # 2-1 타이밍 맞춰서
     @staticmethod
-    def enter(player):
+    def enter(player,e):
         player.action=2
         player.frame = 0
         print('Timing Enter')
 
     @staticmethod
-    def exit(player):
+    def exit(player,e):
         print('Timing Exit')
 
     @staticmethod
@@ -128,42 +131,43 @@ class Timing:    # 2-1 타이밍 맞춰서
 
 class Shoot:    # 2-2 날리기
     @staticmethod
-    def enter(player):
+    def enter(player,e):
         player.action=2
         player.frame = 0
         print('Shoot Enter')
 
     @staticmethod
-    def exit(player):
+    def exit(player,e):
 
         print('Shoot Exit')
 
     @staticmethod
     def do(player):
         player.frame = player.frame+1
-        pass
+        if player.frame > 8:
+            player.state_machine.handle_event(('FINISH_SHOOT',0))
 
     @staticmethod
     def draw(player):
         player.image.clip_draw(player.frame*100,player.action*100,100,100,50+player.forward,50)
-        pass
 
 
 class Finish_action:    # 피니시 동작
     @staticmethod
-    def enter(player):
+    def enter(player,e):
         player.action=2
         player.frame = 0
         print('Finish_action Enter')
 
     @staticmethod
-    def exit(player):
+    def exit(player,e):
 
         print('Finish_action Exit')
 
     @staticmethod
     def do(player):
-        player.frame = player.frame+1
+        if player.frame<4:
+            player.frame = player.frame+1
         pass
 
     @staticmethod
@@ -193,8 +197,17 @@ class StateMachine:
             Finish_action: {end_turn: Idle},
         }
 
+    def handle_event(self, e):
+        for check_event, next_state in self.transitions[self.cur_state].items():
+            if check_event(e):
+                self.cur_state.exit(self.player,e)
+                self.cur_state=next_state
+                self.cur_state.enter(self.player,e)
+                return True
+
+        return False
     def start(self):
-        self.cur_state.enter(self.player)
+        self.cur_state.enter(self.player,('START',0))
 
     def update(self):
         self.cur_state.do(self.player)
