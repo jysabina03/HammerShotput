@@ -2,6 +2,21 @@ from pico2d import load_image, get_time
 from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_SPACE
 
 import ball
+import game_framework
+
+# 공으로 전진하는 스피드
+PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
+RUN_SPEED_KMPH = 10 # Km / Hour      #아주 조금 전진(공이 가까움...)
+RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+
+
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 8
+
+
 
 
 def right_down(e):
@@ -100,14 +115,16 @@ class Charging:    # 1. 좌우연타차징
 
     @staticmethod
     def do(player):
-        player.frame = (player.frame+1)%8
-        if get_time() - player.charge_time > 2:     # 시간
+        player.forward += RUN_SPEED_PPS * game_framework.frame_time
+
+        player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        if get_time() - player.charge_time > 5:     # 시간
             player.state_machine.handle_event(('TIME_OUT',0))
         pass
 
     @staticmethod
     def draw(player):
-        player.image.clip_draw(player.frame*100,(5-player.action)*100,100,100,50+player.forward,70)
+        player.image.clip_draw(int(player.frame)*100,(5-player.action)*100,100,100,50+player.forward,70)
         pass
 
 
