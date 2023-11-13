@@ -1,6 +1,7 @@
 from pico2d import *
 
 import game_world
+from Ball import Ball
 from Player import Player
 from grass import Grass
 from sky import Sky
@@ -29,6 +30,7 @@ def reset_world():
     global grass_reset_y
     global sky
     global player_Kirby, player_DDD
+    global wadlle_ball
     running = True
 
     grass = Grass(30)
@@ -40,8 +42,15 @@ def reset_world():
     sky = Sky(0)
     game_world.add_object(sky, 0)
 
-    player_Kirby = Player('Kirby')
+
+    wadlle_ball = Ball()
+    game_world.add_object(wadlle_ball, 2)
+
+    player_Kirby = Player('Kirby',wadlle_ball)
     game_world.add_object(player_Kirby, 3)
+
+
+
 def update_world():
     game_world.update()
 

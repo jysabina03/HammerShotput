@@ -1,6 +1,8 @@
 from pico2d import load_image, get_time
 from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_SPACE
 
+import ball
+
 
 def right_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_RIGHT
@@ -44,11 +46,11 @@ class Idle:
         player.hammer_xspeed=0
         player.hammer_yspeed=0
 
-        print('Set_angle Idle')
+        print('Idle Enter')
 
     @staticmethod
     def exit(player,e):
-        print('Set_angle Idle')
+        print('Idle Exit')
 
     @staticmethod
     def do(player):
@@ -99,7 +101,7 @@ class Charging:    # 1. 좌우연타차징
     @staticmethod
     def do(player):
         player.frame = (player.frame+1)%8
-        if get_time() - player.charge_time > 5:
+        if get_time() - player.charge_time > 2:     # 시간
             player.state_machine.handle_event(('TIME_OUT',0))
         pass
 
@@ -145,6 +147,7 @@ class Shoot:    # 2-2 날리기
     def do(player):
         player.frame = player.frame+1
         if player.frame > 8:
+            player.send_speed_to_ball(player.hammer_xspeed, player.hammer_yspeed)
             player.state_machine.handle_event(('FINISH_SHOOT',0))
 
     @staticmethod
@@ -220,7 +223,7 @@ class StateMachine:
 
 
 class Player:
-    def __init__(self,type):
+    def __init__(self,type,target_ball):
         self.frame = 0
         self.action = 0 # 0:각도조절 2:좌우연타 3:타이밍치기 4:치고대기 5:결과발표대기 6: 승/패모션
         self.type = type
@@ -233,7 +236,7 @@ class Player:
         self.hammer_accuracy=0
         self.hammer_xspeed=0
         self.hammer_yspeed=0
-
+        self.ball = target_ball
 
         if type == 'Kirby':
             self.image = load_image('sp_kirby.png')
@@ -249,5 +252,10 @@ class Player:
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))
 
+    def send_speed_to_ball(self,hammer_xspeed,hammer_yspeed):
+        print("공에게 속도값 전달")
+        self.ball.receive_speed(hammer_xspeed,hammer_yspeed)
+
     def draw(self):
         self.state_machine.draw()
+
