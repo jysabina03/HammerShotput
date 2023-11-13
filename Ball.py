@@ -1,7 +1,12 @@
 from pico2d import load_image, get_time
 from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_SPACE
 
+import game_framework
 
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION_FAST = 12
+FRAMES_PER_ACTION_SLOW= 0.5
 
 def start_turn(e):
     return e[0] == 'START_TURN'
@@ -53,12 +58,12 @@ class Stand_by_Shoot:    # 0. 앉아서 슛 대기
 
     @staticmethod
     def do(ball):
-        ball.frame = (ball.frame+1)%2
+        ball.frame = (ball.frame + FRAMES_PER_ACTION_SLOW* ACTION_PER_TIME * game_framework.frame_time) % 2
         pass
 
     @staticmethod
     def draw(ball):
-        ball.image.clip_draw(ball.frame*26,(2-ball.action)*26,26,26,200,90)
+        ball.image.clip_draw(int(ball.frame)*26,(2-ball.action)*26,26,26,200,90)
         pass
 
 class fly_away:    # 1. 날라감
@@ -74,12 +79,13 @@ class fly_away:    # 1. 날라감
 
     @staticmethod
     def do(ball):
-        ball.frame = (ball.frame+1)%8
+
+        ball.frame = (ball.frame + FRAMES_PER_ACTION_FAST * ACTION_PER_TIME * game_framework.frame_time) % 8
         pass
 
     @staticmethod
     def draw(ball):
-        ball.image.clip_draw(ball.frame*26,(2-ball.action)*26,26,26,200,90)
+        ball.image.clip_draw(int(ball.frame)*26,(2-ball.action)*26,26,26,200,90)
         pass
 
 
@@ -96,12 +102,13 @@ class landing:    # 2. 착지
 
     @staticmethod
     def do(ball):
-        ball.frame = (ball.frame+1)%8
+        if ball.frame < 16:
+            ball.frame = (ball.frame + FRAMES_PER_ACTION_FAST *FRAMES_PER_ACTION_SLOW* ACTION_PER_TIME * game_framework.frame_time)
         pass
 
     @staticmethod
     def draw(ball):
-        ball.image.clip_draw(ball.frame*40,0,40,24,200,90)
+        ball.image.clip_draw(int(ball.frame)*40,0,40,24,200,90)
         pass
 
 

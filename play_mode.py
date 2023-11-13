@@ -16,16 +16,15 @@ def handle_events():
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
-            #game_framework.quit()
-            running = False
+            game_framework.quit()
+            #running = False
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            #game_framework.quit()
-            running = False
+            game_framework.quit()
+            #running = False
         else:
             player_Kirby.handle_event(event)
 
-
-def reset_world():
+def init():
     global running
     global grass
     global team
@@ -51,26 +50,14 @@ def reset_world():
     player_Kirby = Player('Kirby',wadlle_ball)
     game_world.add_object(player_Kirby, 3)
 
+def finish():
+    pass
 
-
-def update_world():
+def update():
     game_world.update()
 
 
-def render_world():
+def draw():
     clear_canvas()
     game_world.render()
     update_canvas()
-
-
-open_canvas()
-reset_world()
-
-# game loop
-while running:
-    handle_events()
-    update_world()
-    render_world()
-    delay(0.01)
-# finalization code
-close_canvas()
