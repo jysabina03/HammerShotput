@@ -77,7 +77,7 @@ class Set_angle:    # 0. 각도조절
 
     @staticmethod
     def draw(player):
-        player.image.clip_draw(player.frame*100,player.action*100,100,100,50,50)
+        player.image.clip_draw(player.frame*100,(5-player.action)*100,100,100,50,70)
         pass
 
 
@@ -105,7 +105,7 @@ class Charging:    # 1. 좌우연타차징
 
     @staticmethod
     def draw(player):
-        player.image.clip_draw(player.frame*100,player.action*100,100,100,50+player.forward,50)
+        player.image.clip_draw(player.frame*100,(5-player.action)*100,100,100,50+player.forward,70)
         pass
 
 
@@ -126,7 +126,7 @@ class Timing:    # 2-1 타이밍 맞춰서
 
     @staticmethod
     def draw(player):
-        player.image.clip_draw(player.frame*100,player.action*100,100,100,50+player.forward,50)
+        player.image.clip_draw(player.frame*100,(5-player.action)*100,100,100,50+player.forward,70)
         pass
 
 class Shoot:    # 2-2 날리기
@@ -149,13 +149,13 @@ class Shoot:    # 2-2 날리기
 
     @staticmethod
     def draw(player):
-        player.image.clip_draw(player.frame*100,player.action*100,100,100,50+player.forward,50)
+        player.image.clip_draw(player.frame*100,(5-player.action)*100,100,100,50+player.forward,70)
 
 
 class Finish_action:    # 피니시 동작
     @staticmethod
     def enter(player,e):
-        player.action=2
+        player.action=3
         player.frame = 0
         print('Finish_action Enter')
 
@@ -166,13 +166,13 @@ class Finish_action:    # 피니시 동작
 
     @staticmethod
     def do(player):
-        if player.frame<4:
+        if player.frame<3:
             player.frame = player.frame+1
         pass
 
     @staticmethod
     def draw(player):
-        player.image.clip_draw(player.frame*100,player.action*100,100,100,50+player.forward,50)
+        player.image.clip_draw(player.frame*100,(5-player.action)*100,100,100,50+player.forward,70)
         pass
 
 
@@ -187,10 +187,11 @@ class Finish_action:    # 피니시 동작
 class StateMachine:
     def __init__(self,player):
         self.player = player
-        self.cur_state = Idle   # 초기 상태
+        # self.cur_state = Idle   # 초기 상태
+        self.cur_state = Set_angle   # 초기 상태 (테스트용)
         self.transitions = {
-            Idle:{start_turn: Set_angle},
-            Set_angle:{space_down: Charging},
+            Idle: {start_turn: Set_angle},
+            Set_angle: {space_down: Charging},
             Charging: {time_out: Timing},
             Timing: {space_down: Shoot},
             Shoot: {finish_shoot: Finish_action},
@@ -207,7 +208,7 @@ class StateMachine:
 
         return False
     def start(self):
-        self.cur_state.enter(self.player,('START',0))
+        self.cur_state.enter(self.player,('NONE',0))
 
     def update(self):
         self.cur_state.do(self.player)
@@ -234,10 +235,10 @@ class Player:
         self.hammer_yspeed=0
 
 
-        if type is 'Kirby':
-            self.image = load_image('sp.kirby.png')
+        if type == 'Kirby':
+            self.image = load_image('sp_kirby.png')
         else:
-            self.image = load_image('sp.dedede.png')
+            self.image = load_image('sp_dedede.png')
 
         self.state_machine = StateMachine(self)
         self.state_machine.start()

@@ -1,6 +1,7 @@
 from pico2d import *
 
 import game_world
+from Player import Player
 from grass import Grass
 from sky import Sky
 
@@ -17,8 +18,8 @@ def handle_events():
             running = False
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
-        #else:
-            #boy.handle_event(event)
+        else:
+            player_Kirby.handle_event(event)
 
 
 def reset_world():
@@ -27,18 +28,20 @@ def reset_world():
     global team
     global grass_reset_y
     global sky
+    global player_Kirby, player_DDD
     running = True
 
     grass = Grass(30)
-    game_world.add_object(grass, 3)
+    game_world.add_object(grass, 1)
 
     sky = Sky(0)
     game_world.add_object(sky, 0)
 
+    sky = Sky(0)
+    game_world.add_object(sky, 0)
 
-
-
-
+    player_Kirby = Player('Kirby')
+    game_world.add_object(player_Kirby, 3)
 def update_world():
     game_world.update()
 
