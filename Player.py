@@ -111,10 +111,14 @@ class Set_angle:    # 0. 각도조절
         if player.is_up_key_pressed:
             if player.hammer_angle <90:
                 player.hammer_angle = (player.hammer_angle + FRAMES_PER_ACTION_FAST * ACTION_PER_TIME * game_framework.frame_time)
+                if player.hammer_angle>90:
+                    player.hammer_angle=90
 
         if player.is_down_key_pressed:
             if player.hammer_angle >0:
                 player.hammer_angle = (player.hammer_angle + FRAMES_PER_ACTION_FAST*-1 * ACTION_PER_TIME * game_framework.frame_time)
+                if player.hammer_angle<0:
+                    player.hammer_angle=0
 
 
 
