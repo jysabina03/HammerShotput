@@ -1,3 +1,5 @@
+import math
+
 from pico2d import load_image, get_time
 from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_SPACE
 
@@ -63,14 +65,24 @@ class Stand_by_Shoot:    # 0. 앉아서 슛 대기
 
     @staticmethod
     def draw(ball):
-        ball.image.clip_draw(int(ball.frame)*26,(2-ball.action)*26,26,26,200,90)
+        #ball.image.clip_draw(int(ball.frame)*26,(2-ball.action)*26,26,26,200,90)
+
+        ball.image.clip_composite_draw(int(ball.frame)*26,(2-ball.action)*26,26,26,0, '', ball.x+ball.normal_x,ball.y+ball.normal_y, 26*2, 26*2)
         pass
 
 class fly_away:    # 1. 날라감
+
+    GRAVITY = 9.8  # 중력 가속도
+
     @staticmethod
     def enter(ball,e):
         ball.action=1
         ball.frame = 0
+        ball.launch_time=0
+        ball.gravity=-1
+        ball.xspeed=50
+        ball.yspeed=40
+
         print('ball - fly_away Enter')
 
     @staticmethod
@@ -79,14 +91,19 @@ class fly_away:    # 1. 날라감
 
     @staticmethod
     def do(ball):
+        # 프레임타임으로 시간 단위, x, y 포물선 좌표 계산
+        ball.x += ball.xspeed*FRAMES_PER_ACTION_FAST*game_framework.frame_time;
+        ball.yspeed += ball.gravity*FRAMES_PER_ACTION_FAST*game_framework.frame_time;
+        ball.y += ball.yspeed*FRAMES_PER_ACTION_FAST*game_framework.frame_time;
 
         ball.frame = (ball.frame + FRAMES_PER_ACTION_FAST * ACTION_PER_TIME * game_framework.frame_time) % 8
         pass
 
     @staticmethod
     def draw(ball):
-        ball.image.clip_draw(int(ball.frame)*26,(2-ball.action)*26,26,26,200,90)
+        ball.image.clip_composite_draw(int(ball.frame)*26,(2-ball.action)*26,26,26,0, '', ball.x+ball.normal_x,ball.y+ball.normal_y, 26*2, 26*2)
         pass
+
 
 
 class landing:    # 2. 착지
@@ -108,7 +125,9 @@ class landing:    # 2. 착지
 
     @staticmethod
     def draw(ball):
-        ball.image.clip_draw(int(ball.frame)*40,0,40,24,200,90)
+        #ball.image.clip_draw(int(ball.frame)*40,0,40,24,200,90)
+        ball.image.clip_composite_draw(int(ball.frame)*40,0,40,24,0, '', ball.x+ball.normal_x,ball.y+ball.normal_y, 40*2, 24*2)
+
         pass
 
 
@@ -166,7 +185,10 @@ class Ball:
         # X축/Y축 스피드
         self.xspeed=0
         self.yspeed=0
+        self.angle =0
 
+        self.normal_x=280
+        self.normal_y=75
         self.x=0
         self.y=0
 
@@ -175,10 +197,11 @@ class Ball:
 
         self.shoot = False
 
-    def receive_speed(self,hammer_xspeed,hammer_yspeed):
-        print(f"스피드 수신 - x: {hammer_xspeed}, y: {hammer_yspeed}")
+    def receive_speed(self,hammer_xspeed,hammer_yspeed,hammer_angle):
+        print(f"스피드 수신 - x: {hammer_xspeed}, y: {hammer_yspeed}, angle: {hammer_angle}")
         self.xspeed=hammer_xspeed
         self.yspeed=hammer_yspeed
+        self.angle = hammer_angle
         self.state_machine.handle_event(('SHOOT', 0))
 
 

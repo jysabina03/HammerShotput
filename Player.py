@@ -1,9 +1,9 @@
-from pico2d import load_image, get_time
-from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_SPACE
+from pico2d import load_image, get_time, get_events
+from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_SPACE, SDLK_DOWN, SDLK_UP, SDL_Event
 
 import ball
 import game_framework
-
+import math
 # 공으로 전진하는 스피드
 PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
 RUN_SPEED_KMPH = 3 # Km / Hour      #아주 조금 전진(공이 가까움...)
@@ -90,23 +90,51 @@ class Set_angle:    # 0. 각도조절
     def enter(player,e):
         player.action=0
         player.frame = 0
+        player.hammer_angle=0   # 각도 처음엔 0
+
+        player.is_up_key_pressed = False       # 꾹누르고있는지
+        player.is_down_key_pressed = False
+
         print('Set_angle Enter')
 
     @staticmethod
     def exit(player,e):
-        print('Set_angle Exit')
+        print(f'Set_angle Exit ㅡ 각도: {player.hammer_angle}')
 
     @staticmethod
     def do(player):
-
         player.frame = (player.frame + FRAMES_PER_ACTION_SLOW * ACTION_PER_TIME * game_framework.frame_time) % 2
+        events = get_events()
+        # 각도 지속적으로 변경
+        for event in events:
+            Set_angle.handle_event(player, event)
+        if player.is_up_key_pressed:
+            if player.hammer_angle <90:
+                player.hammer_angle = (player.hammer_angle + FRAMES_PER_ACTION_FAST * ACTION_PER_TIME * game_framework.frame_time)
 
-        pass
+        if player.is_down_key_pressed:
+            if player.hammer_angle >0:
+                player.hammer_angle = (player.hammer_angle + FRAMES_PER_ACTION_FAST*-1 * ACTION_PER_TIME * game_framework.frame_time)
+
+
+
+    def handle_event(player, event):
+        if event.type == SDL_KEYDOWN:
+            if event.key == SDLK_UP:
+                player.is_up_key_pressed = True
+                player.is_down_key_pressed = False
+                print('Up 키 눌림')
+            elif event.key == SDLK_DOWN:
+                player.is_down_key_pressed = True
+                player.is_up_key_pressed = False
+                print('Down 키 눌림')
 
     @staticmethod
     def draw(player):
-        player.image.clip_draw(int(player.frame)*100,(5-player.action)*100,100,100,50,70)
-        pass
+        #player.image.clip_draw(int(player.frame)*100,(5-player.action)*100,100,100,50,70)
+        player.image.clip_composite_draw(int(player.frame)*100,(5-player.action)*100,100,100,0, '', 50,100, 100*2, 100*2)
+        player.arrow_image.clip_composite_draw(0,0,100,100,math.radians(player.hammer_angle), '', 100,100, 100*2, 100*2)
+
 
 
 
@@ -135,7 +163,8 @@ class Charging:    # 1. 좌우연타차징
 
     @staticmethod
     def draw(player):
-        player.image.clip_draw(int(player.frame)*120,(5-player.action)*100,100,100,50+player.forward,70)
+        #player.image.clip_draw(int(player.frame)*120,(5-player.action)*100,100,100,50+player.forward,70)
+        player.image.clip_composite_draw(int(player.frame)*120,(5-player.action)*100,100,100,0, '', 50+player.forward,100, 120*2, 100*2)
         pass
 
 
@@ -156,7 +185,8 @@ class Timing:    # 2-1 타이밍 맞춰서
 
     @staticmethod
     def draw(player):
-        player.image.clip_draw(player.frame*100,(5-player.action)*100,100,100,50+player.forward,70)
+        #player.image.clip_draw(player.frame*100,(5-player.action)*100,100,100,50+player.forward,70)
+        player.image.clip_composite_draw(int(player.frame)*100,(5-player.action)*100,100,100,0, '', 80+player.forward,100, 100*2, 100*2)
         pass
 
 class Shoot:    # 2-2 날리기
@@ -176,12 +206,14 @@ class Shoot:    # 2-2 날리기
 
         player.frame = (player.frame + FRAMES_PER_ACTION_FAST * ACTION_PER_TIME * game_framework.frame_time)
         if player.frame > 8:
-            player.send_speed_to_ball(player.hammer_xspeed, player.hammer_yspeed)
+            player.send_speed_to_ball(player.hammer_xspeed, player.hammer_yspeed,player.hammer_angle)
             player.state_machine.handle_event(('FINISH_SHOOT',0))
 
     @staticmethod
     def draw(player):
-        player.image.clip_draw(int(player.frame)*100,(5-player.action)*100,100,100,50+player.forward,70)
+        #player.image.clip_draw(int(player.frame)*100,(5-player.action)*100,100,100,50+player.forward,70)
+        player.image.clip_composite_draw(int(player.frame)*100,(5-player.action)*100,100,100,0, '', 80+player.forward,100, 100*2, 100*2)
+
 
 
 class Finish_action:    # 피니시 동작
@@ -204,7 +236,9 @@ class Finish_action:    # 피니시 동작
 
     @staticmethod
     def draw(player):
-        player.image.clip_draw(player.frame*100,(5-player.action)*100,100,100,50+player.forward,70)
+        #player.image.clip_draw(player.frame*100,(5-player.action)*100,100,100,50+player.forward,70)
+
+        player.image.clip_composite_draw(int(player.frame)*100,(5-player.action)*100,100,100,0, '', 80+player.forward,100, 100*2, 100*2)
         pass
 
 
@@ -267,6 +301,8 @@ class Player:
         self.hammer_yspeed=0
         self.ball = target_ball
 
+        self.arrow_image = load_image('arrow.png')
+
         if type == 'Kirby':
             self.image = load_image('sp_kirby.png')
         else:
@@ -281,9 +317,9 @@ class Player:
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))
 
-    def send_speed_to_ball(self,hammer_xspeed,hammer_yspeed):
+    def send_speed_to_ball(self,hammer_xspeed,hammer_yspeed,hammer_angle):
         print("공에게 속도값 전달")
-        self.ball.receive_speed(hammer_xspeed,hammer_yspeed)
+        self.ball.receive_speed(hammer_xspeed,hammer_yspeed,hammer_angle)
 
     def draw(self):
         self.state_machine.draw()
