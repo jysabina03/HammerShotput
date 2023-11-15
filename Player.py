@@ -1,7 +1,5 @@
 from pico2d import load_image, get_time, get_events
 from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_SPACE, SDLK_DOWN, SDLK_UP, SDL_Event
-
-import ball
 import game_framework
 import math
 # 공으로 전진하는 스피드
@@ -161,7 +159,7 @@ class Charging:    # 1. 좌우연타차징
         player.forward += RUN_SPEED_PPS * game_framework.frame_time
 
         player.frame = (player.frame + FRAMES_PER_ACTION_FAST * ACTION_PER_TIME * game_framework.frame_time) % 8
-        if get_time() - player.charge_time > 5:     # 시간
+        if get_time() - player.charge_time > 1:     # 시간
             player.state_machine.handle_event(('TIME_OUT',0))
         pass
 
