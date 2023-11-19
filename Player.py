@@ -159,7 +159,7 @@ class Charging:  # 1. 좌우연타차징
     @staticmethod
     def exit(player, e):
 
-        print('Charging Exit')
+        print(f'Charging Exit - 차지:{player.hammer_charge}')
 
     @staticmethod
     def do(player):
@@ -219,20 +219,31 @@ class Timing:  # 2-1 타이밍 맞춰서
         player.action = 2
         player.frame = 0
         print('Timing Enter')
+        player.acc = 0
+
 
     @staticmethod
     def exit(player, e):
-        print('Timing Exit')
+        if player.acc > 100:
+            player.acc -= (player.acc-100)
+        player.hammer_accuracy = player.acc
+        print(f'Timing Exit - 정확도: {player.hammer_accuracy}')
 
     @staticmethod
     def do(player):
+        if player.acc >=125:
+            player.acc = 20
+            player.state_machine.handle_event(('TIME_OUT', 0))
+        player.acc = (player.acc + FRAMES_PER_ACTION_FAST*1.5 * ACTION_PER_TIME * game_framework.frame_time)
         pass
 
     @staticmethod
     def draw(player):
-        # player.image.clip_draw(player.frame*100,(5-player.action)*100,100,100,50+player.forward,70)
         player.image.clip_composite_draw(int(player.frame) * 100, (5 - player.action) * 100, 100, 100, 0, '',
                                          80 + player.forward, 100, 100 * 2, 100 * 2)
+
+        player.timing_hammer.clip_composite_draw(0, 0, 100, 100, 0, 'h', 250, 220, player.acc*1.5, player.acc*1.5)
+        player.timing_target.clip_composite_draw(0, 0, 100, 100, 0, 'h', 250, 220, 150, 150)
         pass
 
 
@@ -243,9 +254,14 @@ class Shoot:  # 2-2 날리기
         player.frame = 0
         print('Shoot Enter')
 
+        energy = player.hammer_charge*player.hammer_accuracy
+        player.hammer_xspeed = energy*(90-player.hammer_angle)/1000 + 3
+        player.hammer_yspeed = energy*(player.hammer_angle)/1000 + 3
+
     @staticmethod
     def exit(player, e):
-        print('Shoot Exit')
+
+        print(f'Shoot Exit - X속도: {player.hammer_xspeed} | Y속도: {player.hammer_yspeed}')
 
     @staticmethod
     def do(player):
@@ -304,10 +320,11 @@ class StateMachine:
             Idle: {start_turn: Set_angle},
             Set_angle: {space_down: Charging},
             Charging: {time_out: Timing},
-            Timing: {space_down: Shoot},
+            Timing: {space_down: Shoot, time_out:Shoot},
             Shoot: {finish_shoot: Finish_action},
             Finish_action: {end_turn: Idle},
         }
+
 
     def handle_event(self, e):
         for check_event, next_state in self.transitions[self.cur_state].items():

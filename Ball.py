@@ -84,8 +84,6 @@ class fly_away:  # 1. 날라감
         ball.frame = 0
         ball.launch_time = 0
         ball.gravity = -1
-        ball.xspeed = 10
-        ball.yspeed = 10
 
         print('ball - fly_away Enter')
 
