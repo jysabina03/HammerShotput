@@ -133,6 +133,7 @@ class Set_angle:  # 0. 각도조절
                 player.is_down_key_pressed = True
                 player.is_up_key_pressed = False
                 print('Down 키 눌림')
+        return
 
     @staticmethod
     def draw(player):
@@ -154,7 +155,6 @@ class Charging:  # 1. 좌우연타차징
 
         player.key_R = False
         player.key_L = False
-        player.count_charge = 0
 
     @staticmethod
     def exit(player, e):
@@ -170,10 +170,10 @@ class Charging:  # 1. 좌우연타차징
         events = get_events()
         # 키입력받기
         for event in events:
-            Set_angle.handle_event(player, event)
+            Charging.handle_event(player, event)
 
-        player.frame = (player.frame + FRAMES_PER_ACTION_FAST * ACTION_PER_TIME * game_framework.frame_time) % 8
-        if get_time() - player.charge_time > 1:  # 시간
+        player.frame = (player.frame + FRAMES_PER_ACTION_SLOW*2 * ACTION_PER_TIME * game_framework.frame_time) % 8
+        if get_time() - player.charge_time > 5:  # 시간
             player.state_machine.handle_event(('TIME_OUT', 0))
         pass
 
@@ -183,21 +183,18 @@ class Charging:  # 1. 좌우연타차징
                 if player.key_R is False:
                     player.key_R = True
                     player.key_L = False
-                    player.count_charge += 1
-                    player.frame+=0.4
+                    player.hammer_charge += 1
+                    player.frame+=0.7
                 print('오른쪽 키 눌림')
             elif event.key == SDLK_LEFT:
                 if player.key_L is False:
                     player.key_R = False
                     player.key_L = True
-                    player.count_charge += 1
-                    player.frame+=0.4
+                    player.hammer_charge += 1
+                    player.frame+=0.7
                 print('왼쪽 키 눌림')
+        return
 
-
-                player.arrow_image.clip_composite_draw(0, 0, 100, 100, math.radians(player.hammer_angle), '', 100, 100,
-                                                       100 * 2,
-                                                       100 * 2)
     @staticmethod
     def draw(player):
         # player.image.clip_draw(int(player.frame)*120,(5-player.action)*100,100,100,50+player.forward,70)
@@ -205,14 +202,14 @@ class Charging:  # 1. 좌우연타차징
                                          50 + player.forward, 100, 120 * 2, 100 * 2)
 
         if player.key_R is False:
-            player.key_on.clip_composite_draw(0, 0, 100, 100, 0, '', 50 + player.forward, 100, 200, 200)
+            player.key_on.clip_composite_draw(0, 0, 100, 100, 0, '', 200, 210, 80, 80)
         else:
-            player.key_off.clip_composite_draw(0, 0, 100, 100, 0, '', 50 + player.forward, 100, 200, 200)
+            player.key_off.clip_composite_draw(0, 0, 100, 100, 0, '', 200, 200, 80, 80)
 
         if player.key_L is False:
-            player.key_on.clip_composite_draw(0, 0, 100, 100, 0, '', 50 + player.forward, 100, 200, 200)
+            player.key_on.clip_composite_draw(0, 0, 100, 100, 0, 'h', 100, 210, 80, 80)
         else:
-            player.key_off.clip_composite_draw(0, 0, 100, 100, 0, '', 50 + player.forward, 100, 200, 200)
+            player.key_off.clip_composite_draw(0, 0, 100, 100, 0, 'h', 100, 200, 80, 80)
 
 
 
@@ -351,6 +348,8 @@ class Player:
         self.arrow_image = load_image('arrow.png')
         self.key_on = load_image('key_on.png')
         self.key_off = load_image('key_off.png')
+        self.timing_target = load_image('timing_target.png')
+        self.timing_hammer = load_image('timing_hammer.png')
 
         if type == 'Kirby':
             self.image = load_image('sp_kirby.png')
