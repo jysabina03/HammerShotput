@@ -7,8 +7,6 @@ import server
 
 
 class Distance_sign:
-    image = None
-
     def __init__(self):
         self.image = load_image('wadlle_m.png')
         self.x = 280

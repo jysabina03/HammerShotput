@@ -262,7 +262,7 @@ class Shoot:  # 2-2 날리기
         player.frame = 0
         print('Shoot Enter')
 
-        energy = player.hammer_charge * player.hammer_accuracy
+        energy = player.hammer_charge * player.hammer_accuracy / 5
         player.hammer_xspeed = energy * (90 - player.hammer_angle) / 1000 + 3
         player.hammer_yspeed = energy * (player.hammer_angle) / 1000 + 3
 

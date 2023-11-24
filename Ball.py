@@ -122,6 +122,7 @@ class landing:  # 2. 착지
         ball.slide = 2
         ball.land_x = 0
         ball.land_y = 0
+        ball.xspeed = clamp(0, ball.xspeed, 25)
         print('ball - landing Enter')
 
     @staticmethod
@@ -232,8 +233,8 @@ class Ball:
 
     def update(self):
         self.state_machine.update()
-        self.dx = clamp(280, self.x, 400)
-        self.dy = clamp(75, self.y, 400)
+        self.dx = clamp(0, self.x, 200)+280
+        self.dy = clamp(0, self.y, 400)+75
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))
