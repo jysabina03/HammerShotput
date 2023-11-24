@@ -45,10 +45,10 @@ def init():
 
 
     wadlle_ball = Ball()
-    game_world.add_object(wadlle_ball, 2)
+    game_world.add_object(wadlle_ball, 3)
 
-    player_Kirby = Player('Kirby',wadlle_ball)
-    game_world.add_object(player_Kirby, 3)
+    player_Kirby = Player('DDD',wadlle_ball)
+    game_world.add_object(player_Kirby, 2)
 
 def finish():
     pass
