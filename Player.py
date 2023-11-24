@@ -107,7 +107,7 @@ class Set_angle:  # 0. 각도조절
 
     @staticmethod
     def exit(player, e):
-        if e[1].type == SDLK_SPACE:
+        if e[1].key == SDLK_SPACE:
             print(f'Set_angle Exit ㅡ 각도: {player.hammer_angle}')
         elif e[1].type == SDL_KEYDOWN:
             if e[1].key == SDLK_DOWN:
@@ -161,19 +161,34 @@ class Set_angle:  # 0. 각도조절
 class Charging:  # 1. 좌우연타차징
     @staticmethod
     def enter(player, e):
-        player.action = 1
-        player.frame = 0
-        player.forward = 0
-        player.charge_time = get_time()
-        print('Charging Enter')
-
-        player.key_R = False
-        player.key_L = False
+        if e[1].key == SDLK_SPACE:
+            player.action = 1
+            player.frame = 0
+            player.forward = 0
+            player.charge_time = get_time()
+            print('Charging Enter')
+            player.key_R = False
+            player.key_L = False
 
     @staticmethod
     def exit(player, e):
 
-        print(f'Charging Exit - 차지:{player.hammer_charge}')
+        if e[0] == 'TIME_OUT':
+            print(f'Charging Exit - 차지:{player.hammer_charge}')
+        elif e[1].type == SDL_KEYDOWN:
+            if e[1].key == SDLK_RIGHT:
+                if player.key_R is False:
+                    player.key_R = True
+                    player.key_L = False
+                    player.hammer_charge += 1
+                    player.frame += 0.7
+                print('오른쪽 키 눌림')
+            elif e[1].key == SDLK_LEFT:
+                if player.key_L is False:
+                    player.key_R = False
+                    player.key_L = True
+                    player.hammer_charge += 1
+                    player.frame += 0.7
 
     @staticmethod
     def do(player):
@@ -181,33 +196,10 @@ class Charging:  # 1. 좌우연타차징
         # 앞으로 조금씩 이동
         player.forward += RUN_SPEED_PPS * game_framework.frame_time
 
-        events = get_events()
-        # 키입력받기
-        for event in events:
-            Charging.handle_event(player, event)
-
         player.frame = (player.frame + FRAMES_PER_ACTION_SLOW * 2 * ACTION_PER_TIME * game_framework.frame_time) % 8
         if get_time() - player.charge_time > 5:  # 시간
             player.state_machine.handle_event(('TIME_OUT', 0))
         pass
-
-    def handle_event(player, event):
-        if event.type == SDL_KEYDOWN:
-            if event.key == SDLK_RIGHT:
-                if player.key_R is False:
-                    player.key_R = True
-                    player.key_L = False
-                    player.hammer_charge += 1
-                    player.frame += 0.7
-                print('오른쪽 키 눌림')
-            elif event.key == SDLK_LEFT:
-                if player.key_L is False:
-                    player.key_R = False
-                    player.key_L = True
-                    player.hammer_charge += 1
-                    player.frame += 0.7
-                print('왼쪽 키 눌림')
-        return
 
     @staticmethod
     def draw(player):
@@ -330,7 +322,7 @@ class StateMachine:
         self.transitions = {
             Idle: {start_turn: Set_angle},
             Set_angle: {space_down: Charging, up_down: Set_angle, down_down: Set_angle},
-            Charging: {time_out: Timing},
+            Charging: {time_out: Timing, right_down: Charging, left_down: Charging},
             Timing: {space_down: Shoot, time_out: Shoot},
             Shoot: {finish_shoot: Finish_action},
             Finish_action: {end_turn: Idle},
@@ -372,10 +364,13 @@ class Player:
         self.hammer_yspeed = 0
         self.ball = target_ball
 
-        #이벤트 안에서 쓰는 것
-
+        # 이벤트 안에서 쓰는 것
         self.is_up_key_pressed = False  # 꾹누르고있는지
-        self.is_down_key_pressed= False
+        self.is_down_key_pressed = False
+
+        self.charge_time = 0
+        self.key_R = False
+        self.key_L = False
 
         self.arrow_image = load_image('arrow.png')
         self.key_on = load_image('key_on.png')
