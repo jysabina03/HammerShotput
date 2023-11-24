@@ -45,6 +45,14 @@ def space_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
 
 
+def up_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_UP
+
+
+def down_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_DOWN
+
+
 def time_out(e):
     return e[0] == 'TIME_OUT'
 
@@ -70,6 +78,8 @@ class Idle:
         player.hammer_accuracy = 0
         player.hammer_xspeed = 0
         player.hammer_yspeed = 0
+        player.is_up_key_pressed = False
+        player.is_down_key_pressed = False
 
         print('Idle Enter')
 
@@ -89,37 +99,41 @@ class Idle:
 class Set_angle:  # 0. 각도조절
     @staticmethod
     def enter(player, e):
-        player.action = 0
-        player.frame = 0
-        player.hammer_angle = 0  # 각도 처음엔 0
-
-        player.is_up_key_pressed = False  # 꾹누르고있는지
-        player.is_down_key_pressed = False
+        if e[0] == 'START_TURN':
+            player.action = 0
+            player.frame = 0
 
         print('Set_angle Enter')
 
     @staticmethod
     def exit(player, e):
-        print(f'Set_angle Exit ㅡ 각도: {player.hammer_angle}')
+        if e[1].type == SDLK_SPACE:
+            print(f'Set_angle Exit ㅡ 각도: {player.hammer_angle}')
+        elif e[1].type == SDL_KEYDOWN:
+            if e[1].key == SDLK_DOWN:
+                player.is_down_key_pressed = True
+                player.is_up_key_pressed = False
+                print('Down 키 눌림')
+            elif e[1].key == SDLK_UP:
+                player.is_up_key_pressed = True
+                player.is_down_key_pressed = False
+                print('Up 키 눌림')
 
     @staticmethod
     def do(player):
         player.frame = (player.frame + FRAMES_PER_ACTION_SLOW * ACTION_PER_TIME * game_framework.frame_time) % 2
-        events = get_events()
-        # 각도 지속적으로 변경
-        for event in events:
-            Set_angle.handle_event(player, event)
+
         if player.is_up_key_pressed:
             if player.hammer_angle < 90:
                 player.hammer_angle = (
-                            player.hammer_angle + FRAMES_PER_ACTION_FAST * ACTION_PER_TIME * game_framework.frame_time)
+                        player.hammer_angle + FRAMES_PER_ACTION_FAST * ACTION_PER_TIME * game_framework.frame_time)
                 if player.hammer_angle > 90:
                     player.hammer_angle = 90
 
         if player.is_down_key_pressed:
             if player.hammer_angle > 0:
                 player.hammer_angle = (
-                            player.hammer_angle + FRAMES_PER_ACTION_FAST * -1 * ACTION_PER_TIME * game_framework.frame_time)
+                        player.hammer_angle + FRAMES_PER_ACTION_FAST * -1 * ACTION_PER_TIME * game_framework.frame_time)
                 if player.hammer_angle < 0:
                     player.hammer_angle = 0
 
@@ -172,7 +186,7 @@ class Charging:  # 1. 좌우연타차징
         for event in events:
             Charging.handle_event(player, event)
 
-        player.frame = (player.frame + FRAMES_PER_ACTION_SLOW*2 * ACTION_PER_TIME * game_framework.frame_time) % 8
+        player.frame = (player.frame + FRAMES_PER_ACTION_SLOW * 2 * ACTION_PER_TIME * game_framework.frame_time) % 8
         if get_time() - player.charge_time > 5:  # 시간
             player.state_machine.handle_event(('TIME_OUT', 0))
         pass
@@ -184,14 +198,14 @@ class Charging:  # 1. 좌우연타차징
                     player.key_R = True
                     player.key_L = False
                     player.hammer_charge += 1
-                    player.frame+=0.7
+                    player.frame += 0.7
                 print('오른쪽 키 눌림')
             elif event.key == SDLK_LEFT:
                 if player.key_L is False:
                     player.key_R = False
                     player.key_L = True
                     player.hammer_charge += 1
-                    player.frame+=0.7
+                    player.frame += 0.7
                 print('왼쪽 키 눌림')
         return
 
@@ -212,7 +226,6 @@ class Charging:  # 1. 좌우연타차징
             player.key_off.clip_composite_draw(0, 0, 100, 100, 0, 'h', 100, 200, 80, 80)
 
 
-
 class Timing:  # 2-1 타이밍 맞춰서
     @staticmethod
     def enter(player, e):
@@ -221,20 +234,19 @@ class Timing:  # 2-1 타이밍 맞춰서
         print('Timing Enter')
         player.acc = 0
 
-
     @staticmethod
     def exit(player, e):
         if player.acc > 100:
-            player.acc -= (player.acc-100)
+            player.acc -= (player.acc - 100)
         player.hammer_accuracy = player.acc
         print(f'Timing Exit - 정확도: {player.hammer_accuracy}')
 
     @staticmethod
     def do(player):
-        if player.acc >=125:
+        if player.acc >= 125:
             player.acc = 20
             player.state_machine.handle_event(('TIME_OUT', 0))
-        player.acc = (player.acc + FRAMES_PER_ACTION_FAST*1.5 * ACTION_PER_TIME * game_framework.frame_time)
+        player.acc = (player.acc + FRAMES_PER_ACTION_FAST * 1.5 * ACTION_PER_TIME * game_framework.frame_time)
         pass
 
     @staticmethod
@@ -242,7 +254,7 @@ class Timing:  # 2-1 타이밍 맞춰서
         player.image.clip_composite_draw(int(player.frame) * 100, (5 - player.action) * 100, 100, 100, 0, '',
                                          80 + player.forward, 100, 100 * 2, 100 * 2)
 
-        player.timing_hammer.clip_composite_draw(0, 0, 100, 100, 0, 'h', 250, 220, player.acc*1.5, player.acc*1.5)
+        player.timing_hammer.clip_composite_draw(0, 0, 100, 100, 0, 'h', 250, 220, player.acc * 1.5, player.acc * 1.5)
         player.timing_target.clip_composite_draw(0, 0, 100, 100, 0, 'h', 250, 220, 150, 150)
         pass
 
@@ -254,13 +266,12 @@ class Shoot:  # 2-2 날리기
         player.frame = 0
         print('Shoot Enter')
 
-        energy = player.hammer_charge*player.hammer_accuracy
-        player.hammer_xspeed = energy*(90-player.hammer_angle)/1000 + 3
-        player.hammer_yspeed = energy*(player.hammer_angle)/1000 + 3
+        energy = player.hammer_charge * player.hammer_accuracy
+        player.hammer_xspeed = energy * (90 - player.hammer_angle) / 1000 + 3
+        player.hammer_yspeed = energy * (player.hammer_angle) / 1000 + 3
 
     @staticmethod
     def exit(player, e):
-
         print(f'Shoot Exit - X속도: {player.hammer_xspeed} | Y속도: {player.hammer_yspeed}')
 
     @staticmethod
@@ -318,13 +329,12 @@ class StateMachine:
         self.cur_state = Set_angle  # 초기 상태 (테스트용)
         self.transitions = {
             Idle: {start_turn: Set_angle},
-            Set_angle: {space_down: Charging},
+            Set_angle: {space_down: Charging, up_down: Set_angle, down_down: Set_angle},
             Charging: {time_out: Timing},
-            Timing: {space_down: Shoot, time_out:Shoot},
+            Timing: {space_down: Shoot, time_out: Shoot},
             Shoot: {finish_shoot: Finish_action},
             Finish_action: {end_turn: Idle},
         }
-
 
     def handle_event(self, e):
         for check_event, next_state in self.transitions[self.cur_state].items():
@@ -361,6 +371,11 @@ class Player:
         self.hammer_xspeed = 0
         self.hammer_yspeed = 0
         self.ball = target_ball
+
+        #이벤트 안에서 쓰는 것
+
+        self.is_up_key_pressed = False  # 꾹누르고있는지
+        self.is_down_key_pressed= False
 
         self.arrow_image = load_image('arrow.png')
         self.key_on = load_image('key_on.png')
