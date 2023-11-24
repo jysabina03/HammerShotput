@@ -110,7 +110,7 @@ class fly_away:  # 1. 날라감
     @staticmethod
     def draw(ball):
         ball.image.clip_composite_draw(int(ball.frame) * 26, (2 - ball.action) * 26, 26, 26, 0, '',
-                                       ball.x + ball.normal_x, ball.y + ball.normal_y, 26 * 2, 26 * 2)
+                                       ball.dx, ball.dy, 26 * 2, 26 * 2)
         pass
 
 
@@ -120,6 +120,8 @@ class landing:  # 2. 착지
         ball.action = 2
         ball.frame = 0
         ball.slide = 2
+        ball.land_x = 0
+        ball.land_y = 0
         print('ball - landing Enter')
 
     @staticmethod
@@ -130,14 +132,14 @@ class landing:  # 2. 착지
     def do(ball):
 
         if ball.frame < 4:
-            ball.x += ball.xspeed / 1.5 * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
+            ball.land_x += ball.xspeed / 1.5 * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
         elif ball.frame < 10:
-            ball.x += ball.xspeed / 1.5 * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
-            ball.y -= (ball.frame-7) * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
+            ball.land_x += ball.xspeed / 1.5 * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
+            ball.land_y -= (ball.frame-7) * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
         elif ball.frame < 16:
-            ball.x += ball.xspeed / 2 * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
+            ball.land_x += ball.xspeed / 2 * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
         elif ball.slide < 7:
-            ball.x += ball.xspeed / ball.slide * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
+            ball.land_x += ball.xspeed / ball.slide * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
             ball.slide+=1
 
 
@@ -149,8 +151,8 @@ class landing:  # 2. 착지
     @staticmethod
     def draw(ball):
         # ball.image.clip_draw(int(ball.frame)*40,0,40,24,200,90)
-        ball.image.clip_composite_draw(int(ball.frame) * 40, 0, 40, 24, 0, '', ball.x + ball.normal_x,
-                                       ball.y + ball.normal_y, 40 * 2, 24 * 2)
+        ball.image.clip_composite_draw(int(ball.frame) * 40, 0, 40, 24, 0, '', ball.dx + ball.land_x,
+                                       ball.dy+ball.land_y, 40 * 2, 24 * 2)
 
         pass
 
@@ -230,8 +232,8 @@ class Ball:
 
     def update(self):
         self.state_machine.update()
-        self.dx = clamp(280, self.x, server.grass.w - 300)
-        self.dy = clamp(75, self.y, server.grass.h - 200)
+        self.dx = clamp(280, self.x, 400)
+        self.dy = clamp(75, self.y, 400)
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))
