@@ -7,6 +7,8 @@ from Player import Player
 from grass import Grass
 from sky import Sky
 
+import server
+
 # Game object class here
 
 
@@ -22,7 +24,7 @@ def handle_events():
             game_framework.quit()
             #running = False
         else:
-            player_Kirby.handle_event(event)
+            server.player_Kirby.handle_event(event)
 
 def init():
     global running
@@ -34,21 +36,17 @@ def init():
     global wadlle_ball
     running = True
 
-    grass = Grass(30)
-    game_world.add_object(grass, 1)
+    server.grass = Grass(30)
+    game_world.add_object(server.grass, 1)
 
-    sky = Sky(0)
-    game_world.add_object(sky, 0)
+    server.sky = Sky()
+    game_world.add_object(server.sky, 0)
 
-    sky = Sky(0)
-    game_world.add_object(sky, 0)
+    server.wadlle_ball = Ball()
+    game_world.add_object(server.wadlle_ball, 3)
 
-
-    wadlle_ball = Ball()
-    game_world.add_object(wadlle_ball, 3)
-
-    player_Kirby = Player('DDD',wadlle_ball)
-    game_world.add_object(player_Kirby, 2)
+    server.player_Kirby = Player('DDD',server.wadlle_ball)
+    game_world.add_object(server.player_Kirby, 2)
 
 def finish():
     pass

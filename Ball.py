@@ -1,9 +1,10 @@
 import math
 
-from pico2d import load_image, get_time
+from pico2d import load_image, get_time, clamp
 from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_SPACE
 
 import game_framework
+import server
 
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
@@ -229,6 +230,8 @@ class Ball:
 
     def update(self):
         self.state_machine.update()
+        self.dx = clamp(280, self.x, server.grass.w - 300)
+        self.dy = clamp(75, self.y, server.grass.h - 200)
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))

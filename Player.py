@@ -3,6 +3,8 @@ from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_SPACE, SDLK
 import game_framework
 import math
 
+import server
+
 # 공으로 전진하는 스피드
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
 RUN_SPEED_KMPH = 3  # Km / Hour      #아주 조금 전진(공이 가까움...)
@@ -277,9 +279,10 @@ class Shoot:  # 2-2 날리기
 
     @staticmethod
     def draw(player):
+        sx = 80 + player.forward - server.grass.window_left
         # player.image.clip_draw(int(player.frame)*100,(5-player.action)*100,100,100,50+player.forward,70)
         player.image.clip_composite_draw(int(player.frame) * 100, (5 - player.action) * 100, 100, 100, 0, '',
-                                         80 + player.forward, 100 + (45 * player.type), 100 * 2, 100 * 2)
+                                         sx, 100 + (45 * player.type), 100 * 2, 100 * 2)
 
 
 class Finish_action:  # 피니시 동작
@@ -302,9 +305,9 @@ class Finish_action:  # 피니시 동작
     @staticmethod
     def draw(player):
         # player.image.clip_draw(player.frame*100,(5-player.action)*100,100,100,50+player.forward,70)
-
+        sx = 80 + player.forward - server.grass.window_left
         player.image.clip_composite_draw(int(player.frame) * 100, (5 - player.action) * 100, 100, 100, 0, '',
-                                         80 + player.forward, 100 + (45 * player.type), 100 * 2, 100 * 2)
+                                         sx, 100 + (45 * player.type), 100 * 2, 100 * 2)
         pass
 
 
