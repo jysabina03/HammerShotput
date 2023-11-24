@@ -4,7 +4,9 @@ from pico2d import load_image, get_time, clamp
 from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_SPACE
 
 import game_framework
+import game_world
 import server
+from Score_dee import Score_dee
 
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
@@ -91,7 +93,10 @@ class fly_away:  # 1. 날라감
     @staticmethod
     def exit(ball, e):
         ball.Landing_position = ball.x
-        print(f'ball - fly_away Exit ㅡ 착지 위치: {ball.x}')
+        print(f'ball - fly_away Exit ㅡ 착지 위치: {ball.x} / 미터 환산: {ball.x/25}')
+
+        score_dee = Score_dee(server.turn, ball.x,ball.dx)
+        game_world.add_object(score_dee,3)
 
     @staticmethod
     def do(ball):
@@ -101,7 +106,7 @@ class fly_away:  # 1. 날라감
         ball.yspeed += ball.gravity * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
         ball.y += ball.yspeed * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
 
-        if ball.y <=  0:
+        if ball.y <= 0:
             ball.state_machine.handle_event(('TOUCH_THE_FLOOR', 0))
 
         ball.frame = (ball.frame + FRAMES_PER_ACTION_FAST * ACTION_PER_TIME * game_framework.frame_time) % 8
@@ -136,24 +141,22 @@ class landing:  # 2. 착지
             ball.land_x += ball.xspeed / 1.5 * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
         elif ball.frame < 10:
             ball.land_x += ball.xspeed / 1.5 * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
-            ball.land_y -= (ball.frame-7) * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
+            ball.land_y -= (ball.frame - 7) * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
         elif ball.frame < 16:
             ball.land_x += ball.xspeed / 2 * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
         elif ball.slide < 7:
             ball.land_x += ball.xspeed / ball.slide * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
-            ball.slide+=1
-
-
+            ball.slide += 1
 
         if ball.frame < 16:
             ball.frame = (
-                        ball.frame + FRAMES_PER_ACTION_FAST * FRAMES_PER_ACTION_SLOW * ACTION_PER_TIME * game_framework.frame_time)
+                    ball.frame + FRAMES_PER_ACTION_FAST * FRAMES_PER_ACTION_SLOW * ACTION_PER_TIME * game_framework.frame_time)
 
     @staticmethod
     def draw(ball):
         # ball.image.clip_draw(int(ball.frame)*40,0,40,24,200,90)
         ball.image.clip_composite_draw(int(ball.frame) * 40, 0, 40, 24, 0, '', ball.dx + ball.land_x,
-                                       ball.dy+ball.land_y, 40 * 2, 24 * 2)
+                                       ball.dy + ball.land_y, 40 * 2, 24 * 2)
 
         pass
 
@@ -233,8 +236,8 @@ class Ball:
 
     def update(self):
         self.state_machine.update()
-        self.dx = clamp(0, self.x, 200)+280
-        self.dy = clamp(0, self.y, 400)+75
+        self.dx = clamp(0, self.x, 200) + 280
+        self.dy = clamp(0, self.y, 400) + 75
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))

@@ -279,7 +279,6 @@ class Shoot:  # 2-2 날리기
 
     @staticmethod
     def draw(player):
-        sx = 80 + player.forward - server.grass.window_left
         # player.image.clip_draw(int(player.frame)*100,(5-player.action)*100,100,100,50+player.forward,70)
         player.image.clip_composite_draw(int(player.frame) * 100, (5 - player.action) * 100, 100, 100, 0, '',
                                          80 + player.forward, 100 + (45 * player.type), 100 * 2, 100 * 2)
