@@ -5,3 +5,4 @@ grass = None
 sky = None
 wadlle_ball = None
 player_Kirby = None
+distance_sign = None

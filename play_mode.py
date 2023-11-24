@@ -3,6 +3,7 @@ from pico2d import *
 import game_framework
 import game_world
 from Ball import Ball
+from Distance_sign import Distance_sign
 from Player import Player
 from grass import Grass
 from sky import Sky
@@ -47,6 +48,9 @@ def init():
 
     server.player_Kirby = Player('DDD',server.wadlle_ball)
     game_world.add_object(server.player_Kirby, 2)
+
+    server.distance_sign = Distance_sign()
+    game_world.add_object(server.distance_sign, 2)
 
 def finish():
     pass
