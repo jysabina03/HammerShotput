@@ -1,0 +1,22 @@
+# 메인 파일 이름을 지정하세요.
+main_file = 'main.py'
+
+# fill here
+
+# 데이타 파일들을 지정하세요.
+data_files = [
+    'arrow.png','dedede.png','grass.png','hammer.png',
+    'key_off.png','key_on.png','kirby.png',
+    'score_dee.png','sky.PNG','sp_dedede.png',
+    'sp_kirby.png','st_wadlle.png','star.png',
+    'timing_hammer.png','timing_target.png',
+    'wadlle.png','wadlle_m.png',
+    'ENCR10B.TTF'
+    # fill here
+]
+
+# 데이타가 들어있는 폴더들을 지정하세요.
+data_folders = [
+    # fill here
+]
+
