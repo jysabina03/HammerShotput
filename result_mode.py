@@ -5,9 +5,9 @@ import game_world
 from Ball import Ball
 from Distance_sign import Distance_sign
 from Player import Player
-from grass import Grass
+from grass import Grass, Grass_simple
 from result_machine import Result_machine
-from sky import Sky
+from sky import Sky, Sky_simple
 
 import server
 
@@ -33,10 +33,10 @@ def init():
     server.result_machine = Result_machine()
     game_world.add_object(server.result_machine, 2)
 
-    server.grass = Grass(30)
+    server.grass = Grass_simple()
     game_world.add_object(server.grass, 1)
 
-    server.sky = Sky()
+    server.sky = Sky_simple()
     game_world.add_object(server.sky, 0)
 
 

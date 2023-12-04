@@ -26,3 +26,16 @@ class Sky:
 
         self.q2l = (self.q1l + self.q1w) % self.w  # 수정된 부분
         self.q2w = clamp(0, self.w - self.q2l, self.w)
+
+class Sky_simple:
+
+    def __init__(self):
+        self.image = load_image('./texture/sky.PNG')  # 1000*600
+
+
+    def draw(self):
+        self.image.draw(400, 300)
+
+    def update(self):
+        pass
+
