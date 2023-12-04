@@ -83,11 +83,11 @@ class Idle:
         player.is_up_key_pressed = False
         player.is_down_key_pressed = False
 
-        print('Idle Enter')
+        print(f'{player.type} - player Idle Enter')
 
     @staticmethod
     def exit(player, e):
-        print('Idle Exit')
+        print(f'{player.type} - Idle Exit')
 
     @staticmethod
     def do(player):
@@ -105,7 +105,7 @@ class Set_angle:  # 0. 각도조절
             player.action = 0
             player.frame = 0
 
-        print('Set_angle Enter')
+        print(f'{player.type} - Set_angle Enter')
 
     @staticmethod
     def exit(player, e):
@@ -323,7 +323,7 @@ class StateMachine:
     def __init__(self, player):
         self.player = player
         # self.cur_state = Idle   # 초기 상태
-        self.cur_state = Set_angle  # 초기 상태 (테스트용)
+        self.cur_state = Idle  # 초기 상태 (테스트용)
         self.transitions = {
             Idle: {start_turn: Set_angle},
             Set_angle: {space_down: Charging, up_down: Set_angle, down_down: Set_angle},

@@ -5,6 +5,7 @@ grass = None
 sky = None
 wadlle_ball = None
 player_Kirby = None
+player_DDD = None
 distance_sign = None
 turn = 0
 score = {'p1':[],'p2':[]}

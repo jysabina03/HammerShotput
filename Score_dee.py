@@ -9,11 +9,13 @@ class Score_dee:
         self.distance = round(dis / 25, 1)
         self.x = dis
         self.y = 107
-        self.dx = ball_dx
-        if turn % 2 == 0:
+        self.plusdx = ball_dx
+        self.type = turn % 2
+        if self.type == 0:
             server.score['p1'].append(self.distance)
         else:
             server.score['p2'].append(self.distance)
+
 
         self.font = load_font('ENCR10B.TTF', 12)
 
@@ -21,8 +23,12 @@ class Score_dee:
         pass
 
     def draw(self):
-        dy = self.y - server.wadlle_ball.y
+
+        self.dx = self.x - server.wadlle_ball.x + self.plusdx
+        self.dy = self.y - server.wadlle_ball.y
 
         self.image.clip_composite_draw(self.type * 70, 4 * 70, 70, 70, 0, '',
-                                       self.dx, dy, 70 * 1.5, 70 * 1.5)
-        self.font.draw(self.dx - 15, dy + 15, f'{self.distance}m', (14, 14, 14))
+                                       self.dx, self.dy, 70 * 1.5,
+                                       70 * 1.5)
+        self.font.draw(self.dx - 15, self.dy + 15,
+                       f'{self.distance}m', (14, 14, 14))

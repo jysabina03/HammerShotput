@@ -36,19 +36,39 @@ class Idle:
     def enter(ball, e):
         ball.xspeed = 0
         ball.yspeed = 0
+        ball.y = 0
+        ball.action = 0
+        ball.frame = 0
 
         print('ball - Idle Enter')
 
     @staticmethod
     def exit(ball, e):
+
+        if server.turn % 2 == 0:
+            server.player_DDD.state_machine.handle_event(('START_TURN', 0))
+        else:
+            server.player_Kirby.state_machine.handle_event(('START_TURN', 0))
+
+        ball.x = 0
+        server.turn += 1
         print('ball - Idle Exit')
 
     @staticmethod
-    def do(player):
+    def do(ball):
+        ball.frame = (ball.frame + FRAMES_PER_ACTION_SLOW * ACTION_PER_TIME * game_framework.frame_time) % 2
+        if ball.x > 5:
+            ball.x -= ball.x / 10 * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
+
+        else:
+            ball.state_machine.handle_event(('START_TURN', 0))
         pass
 
+
     @staticmethod
-    def draw(player):
+    def draw(ball):
+        ball.image.clip_composite_draw(int(ball.frame) * 26, (2 - ball.action) * 26, 26, 26, 0, '',
+                                       ball.normal_x-ball.x, ball.normal_y, 26 * 2, 26 * 2)
         pass
 
 
@@ -93,10 +113,10 @@ class fly_away:  # 1. 날라감
     @staticmethod
     def exit(ball, e):
         ball.Landing_position = ball.x
-        print(f'ball - fly_away Exit ㅡ 착지 위치: {ball.x} / 미터 환산: {ball.x/25}')
+        print(f'ball - fly_away Exit ㅡ 착지 위치: {ball.x} / 미터 환산: {ball.x / 25}')
 
-        score_dee = Score_dee(server.turn, ball.x,ball.dx)
-        game_world.add_object(score_dee,3)
+        score_dee = Score_dee(server.turn, ball.x, ball.dx)
+        game_world.add_object(score_dee, 3)
 
     @staticmethod
     def do(ball):
@@ -128,6 +148,8 @@ class landing:  # 2. 착지
         ball.land_x = 0
         ball.land_y = 0
         ball.xspeed = clamp(0, ball.xspeed, 25)
+
+        ball.landing_time = get_time()
         print('ball - landing Enter')
 
     @staticmethod
@@ -136,6 +158,13 @@ class landing:  # 2. 착지
 
     @staticmethod
     def do(ball):
+
+        if get_time() - ball.landing_time > 5:  # 시간
+            ball.state_machine.handle_event(('END_TURN', 0))
+            if server.turn % 2 == 0:
+                server.player_Kirby.state_machine.handle_event(('END_TURN', 0))
+            else:
+                server.player_DDD.state_machine.handle_event(('END_TURN', 0))
 
         if ball.frame < 4:
             ball.land_x += ball.xspeed / 1.5 * FRAMES_PER_ACTION_FAST * game_framework.frame_time;

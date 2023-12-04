@@ -25,7 +25,10 @@ def handle_events():
             game_framework.quit()
             #running = False
         else:
-            server.player_Kirby.handle_event(event)
+            if server.turn%2==0:
+                server.player_Kirby.handle_event(event)
+            else:
+                server.player_DDD.handle_event(event)
 
 def init():
     global running
@@ -46,12 +49,17 @@ def init():
     server.wadlle_ball = Ball()
     game_world.add_object(server.wadlle_ball, 3)
 
-    server.player_Kirby = Player('DDD',server.wadlle_ball)
+    server.player_Kirby = Player('Kirby',server.wadlle_ball)
     game_world.add_object(server.player_Kirby, 2)
+
+
+    server.player_DDD = Player('DDD',server.wadlle_ball)
+    game_world.add_object(server.player_DDD, 2)
 
     server.distance_sign = Distance_sign()
     game_world.add_object(server.distance_sign, 2)
 
+    server.player_Kirby.state_machine.handle_event(('START_TURN', 0))
 def finish():
     pass
 
