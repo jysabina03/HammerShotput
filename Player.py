@@ -115,7 +115,7 @@ class Set_angle:  # 0. 각도조절
         if e[1].key == SDLK_SPACE:
             print(f'Set_angle Exit ㅡ 각도: {player.hammer_angle}')
         elif e[1].type == SDL_KEYDOWN:
-            player.anglespeed = round(random.uniform(1.5, 3.0), 1)
+            player.anglespeed = round(random.uniform(2.0, 4.0), 1)
             if e[1].key == SDLK_DOWN:
                 player.is_down_key_pressed = True
                 player.is_up_key_pressed = False
@@ -246,7 +246,7 @@ class Timing:  # 2-1 타이밍 맞춰서
         if player.acc >= 125:
             player.acc = 20
             player.state_machine.handle_event(('TIME_OUT', 0))
-        player.acc = (player.acc + FRAMES_PER_ACTION_FAST * 1.5 * ACTION_PER_TIME * game_framework.frame_time)
+        player.acc = (player.acc + FRAMES_PER_ACTION_FAST * 1.9 * ACTION_PER_TIME * game_framework.frame_time)
         pass
 
     @staticmethod
