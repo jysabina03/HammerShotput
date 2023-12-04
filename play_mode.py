@@ -2,6 +2,7 @@ from pico2d import *
 
 import game_framework
 import game_world
+import result_mode
 from Ball import Ball
 from Distance_sign import Distance_sign
 from Player import Player
@@ -61,9 +62,12 @@ def init():
 
     server.player_Kirby.state_machine.handle_event(('START_TURN', 0))
 def finish():
+    game_world.clear()
     pass
 
 def update():
+    if server.turn >1:
+        game_framework.change_mode(result_mode)
     game_world.update()
 
 

@@ -9,3 +9,4 @@ player_DDD = None
 distance_sign = None
 turn = 0
 score = {'p1':[],'p2':[]}
+result_machine=None

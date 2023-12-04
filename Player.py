@@ -304,7 +304,7 @@ class Finish_action:  # 피니시 동작
     @staticmethod
     def draw(player):
         player.dx = 80 + player.forward - server.wadlle_ball.x
-        player.dy = 100 + (45 * player.type) - server.wadlle_ball.y
+        player.dy = 95 + (45 * player.type) - server.wadlle_ball.y
         # player.image.clip_draw(player.frame*100,(5-player.action)*100,100,100,50+player.forward,70)
         player.image.clip_composite_draw(int(player.frame) * 100, (5 - player.action) * 100, 100, 100, 0, '',
                                          player.dx, player.dy, 100 * 2, 100 * 2)
