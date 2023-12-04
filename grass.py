@@ -20,7 +20,7 @@ class Grass:
         self.dy = 0 - server.wadlle_ball.y-1
 
 
-        self.window_left = clamp(0, int(server.wadlle_ball.x) - self.cw // 2, self.w - self.cw - 1)
+        self.window_left = clamp(0, int(server.wadlle_ball.x+280) - self.cw // 2, self.w - self.cw - 1)
 
         self.q1l = (int(server.wadlle_ball.x) - self.cw // 2) % self.w
         self.q1w = clamp(0, self.w - self.q1l, self.w)

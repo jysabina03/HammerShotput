@@ -4,13 +4,16 @@ import server
 
 
 class Score_dee:
-    def __init__(self, player_type, dis,ball_dx):
+    def __init__(self, turn, dis, ball_dx):
         self.image = load_image('score_dee.png')
-        self.distance = round(dis / 25,1)
+        self.distance = round(dis / 25, 1)
         self.x = dis
         self.y = 107
         self.dx = ball_dx
-        self.type = player_type
+        if turn % 2 == 0:
+            server.score['p1'].append(self.distance)
+        else:
+            server.score['p2'].append(self.distance)
 
         self.font = load_font('ENCR10B.TTF', 12)
 

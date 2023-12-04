@@ -7,3 +7,4 @@ wadlle_ball = None
 player_Kirby = None
 distance_sign = None
 turn = 0
+score = {'p1':[],'p2':[]}
