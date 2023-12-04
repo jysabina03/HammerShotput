@@ -155,10 +155,10 @@ class Set_angle:  # 0. 각도조절
     def draw(player):
         # player.image.clip_draw(int(player.frame)*100,(5-player.action)*100,100,100,50,70)
         player.image.clip_composite_draw(int(player.frame) * 100, (5 - player.action) * 100, 100, 100, 0, '', 50,
-                                         100 + (45 * player.type),
+                                         95 + (45 * player.type),
                                          100 * 2, 100 * 2)
         player.arrow_image.clip_composite_draw(0, 0, 100, 100, math.radians(player.hammer_angle), '',
-                                               100 + (30 * player.type), 100 + (30 * player.type), 100 * 2,
+                                               95 + (30 * player.type), 100 + (30 * player.type), 100 * 2,
                                                100 * 2)
 
 
@@ -209,7 +209,7 @@ class Charging:  # 1. 좌우연타차징
     def draw(player):
         # player.image.clip_draw(int(player.frame)*120,(5-player.action)*100,100,100,50+player.forward,70)
         player.image.clip_composite_draw(int(player.frame) * 120, (5 - player.action) * 100, 120, 100, 0, '',
-                                         50 + player.forward, 100 + (45 * player.type), 120 * 2, 100 * 2)
+                                         50 + player.forward, 95 + (45 * player.type), 120 * 2, 100 * 2)
 
         if player.key_R is False:
             player.key_on.clip_composite_draw(0, 0, 100, 100, 0, '', 200, 210, 80, 80)
@@ -248,7 +248,7 @@ class Timing:  # 2-1 타이밍 맞춰서
     @staticmethod
     def draw(player):
         player.image.clip_composite_draw(int(player.frame) * 100, (5 - player.action) * 100, 100, 100, 0, '',
-                                         80 + player.forward, 100 + (45 * player.type), 100 * 2, 100 * 2)
+                                         80 + player.forward, 95 + (45 * player.type), 100 * 2, 100 * 2)
 
         player.timing_hammer.clip_composite_draw(0, 0, 100, 100, 0, 'h', 250, 220, player.acc * 1.5, player.acc * 1.5)
         player.timing_target.clip_composite_draw(0, 0, 100, 100, 0, 'h', 250, 220, 150, 150)
@@ -281,7 +281,7 @@ class Shoot:  # 2-2 날리기
     def draw(player):
         # player.image.clip_draw(int(player.frame)*100,(5-player.action)*100,100,100,50+player.forward,70)
         player.image.clip_composite_draw(int(player.frame) * 100, (5 - player.action) * 100, 100, 100, 0, '',
-                                         80 + player.forward, 100 + (45 * player.type), 100 * 2, 100 * 2)
+                                         80 + player.forward, 95 + (45 * player.type), 100 * 2, 100 * 2)
 
 
 class Finish_action:  # 피니시 동작
@@ -376,17 +376,17 @@ class Player:
         self.key_R = False
         self.key_L = False
 
-        self.arrow_image = load_image('arrow.png')
-        self.key_on = load_image('key_on.png')
-        self.key_off = load_image('key_off.png')
-        self.timing_target = load_image('timing_target.png')
-        self.timing_hammer = load_image('timing_hammer.png')
+        self.arrow_image = load_image('./texture/arrow.png')
+        self.key_on = load_image('./texture/key_on.png')
+        self.key_off = load_image('./texture/key_off.png')
+        self.timing_target = load_image('./texture/timing_target.png')
+        self.timing_hammer = load_image('./texture/timing_hammer.png')
 
         if type == 'Kirby':
-            self.image = load_image('sp_kirby.png')
+            self.image = load_image('./texture/sp_kirby.png')
             self.type = 0
         else:
-            self.image = load_image('sp_dedede.png')
+            self.image = load_image('./texture/sp_dedede.png')
             self.type = 1
 
         self.state_machine = StateMachine(self)

@@ -57,8 +57,8 @@ class Idle:
     @staticmethod
     def do(ball):
         ball.frame = (ball.frame + FRAMES_PER_ACTION_SLOW * ACTION_PER_TIME * game_framework.frame_time) % 2
-        if ball.x > 5:
-            ball.x -= ball.x / 10 * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
+        if ball.x > 0:
+            ball.x -= ball.x / 10 * FRAMES_PER_ACTION_FAST * game_framework.frame_time+0.5;
 
         else:
             ball.state_machine.handle_event(('START_TURN', 0))
@@ -238,7 +238,7 @@ class Ball:
         self.frame = 0
         self.action = 0
 
-        self.image = load_image('st_wadlle.png')
+        self.image = load_image('./texture/st_wadlle.png')
 
         # X축/Y축 스피드
         self.xspeed = 0

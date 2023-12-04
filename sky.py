@@ -7,7 +7,7 @@ class Sky:
 
     def __init__(self):
         self.window_left = None
-        self.image = load_image('sky.PNG')  # 1000*600
+        self.image = load_image('./texture/sky.PNG')  # 1000*600
 
         self.cw = get_canvas_width()
         self.ch = get_canvas_height()

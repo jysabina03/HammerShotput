@@ -6,9 +6,9 @@ import server
 class Distance_sign:
     def __init__(self):
         # self.image = load_image('wadlle_m.png')
-        self.dis_kirby = load_image('Distance_UI_kirby.png')
-        self.dis_DDD = load_image('Distance_UI_DDD.png')
-        self.dis_now = load_image('Distance_UI.png')
+        self.dis_kirby = load_image('./texture/Distance_UI_kirby.png')
+        self.dis_DDD = load_image('./texture/Distance_UI_DDD.png')
+        self.dis_now = load_image('./texture/Distance_UI.png')
 
         self.font = load_font('ENCR10B.TTF', 18)
 
@@ -25,14 +25,14 @@ class Distance_sign:
             p1_score += _
 
         self.dis_kirby.clip_composite_draw(0, 0, 150, 30, 0, '', 75, 450, 150, 30)
-        self.font.draw(10, 450, f'P1: {p1_score}m', (14, 14, 14))
+        self.font.draw(10, 450, f'P1: {round(p1_score, 1)}m', (14, 14, 14))
 
         p2_score = 0
         for _ in server.score['p2']:
             p2_score += _
 
         self.dis_DDD.clip_composite_draw(0, 0, 150, 30, 0, '', 75, 350, 150, 30)
-        self.font.draw(10, 350, f'P2: {p2_score}m', (14, 14, 14))
+        self.font.draw(10, 350, f'P2: {round(p2_score, 1)}m', (14, 14, 14))
 
     # for i in range(0, int(server.wadlle_ball.x + 1000), 250):
 

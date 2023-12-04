@@ -1,12 +1,18 @@
 from pico2d import load_image, get_canvas_width, get_canvas_height, clamp
+
+import game_framework
 import server
 
+
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION_SLOW = 0.5
 
 class Grass:
     grass_num = 0
 
     def __init__(self, y):
-        self.image = load_image('grass.png')
+        self.image = load_image('./texture/grass.png')
         self.cw = get_canvas_width()
         self.ch = get_canvas_height()
         self.w = self.image.w
