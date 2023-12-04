@@ -8,7 +8,7 @@ import server
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION_FAST = 12
-FRAMES_PER_ACTION_SLOW = 0.5
+FRAMES_PER_ACTION_SLOW = 0.75
 
 # 공으로 전진하는 스피드
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
@@ -308,6 +308,8 @@ class Final_result:
         else:
             result_machine.result_final = 0
 
+        result_machine.kirby_lose_trigger = True
+
     @staticmethod
     def exit(result_machine, e):
         print('result Score1 Exit')
@@ -315,13 +317,13 @@ class Final_result:
     @staticmethod
     def do(result_machine):
 
-        if result_machine.dee_x < 40:
-            result_machine.dee_x += RUN_SPEED_PPS * game_framework.frame_time
-        else:
-            result_machine.state_machine.handle_event(('TIME_OUT', 0))
+        if result_machine.text_y2 > 450:
+            result_machine.text_y2 -= RUN_SPEED_PPS * game_framework.frame_time
 
         result_machine.frame = (
                                        result_machine.frame + FRAMES_PER_ACTION_SLOW * 2 * ACTION_PER_TIME * game_framework.frame_time) % 4
+        if int(result_machine.frame) == 3:
+            result_machine.kirby_lose_trigger = False
 
         pass
 
@@ -332,10 +334,31 @@ class Final_result:
         result_machine.result_text.draw(400, result_machine.text_y)
 
         # 캐릭터들
-        result_machine.image_kirby.clip_composite_draw(int(result_machine.frame) * 100, (1) * 100, 100, 100, 0, '', 100,
-                                                       95, 100 * 2, 100 * 2)
-        result_machine.image_DDD.clip_composite_draw(int(result_machine.frame) * 100, (1) * 100, 100, 100, 0, '', 680,
-                                                     95 + 45, 100 * 2, 100 * 2)
+
+        if result_machine.result_final == 0:
+
+            result_machine.image_kirby.clip_composite_draw(int(result_machine.frame) * 100, (1) * 100, 100, 100, 0, '',
+                                                           100, 95, 100 * 2, 100 * 2)
+            result_machine.image_DDD.clip_composite_draw(int(result_machine.frame) * 100, (1) * 100, 100, 100, 0, '',
+                                                         680, 95 + 45, 100 * 2, 100 * 2)
+        elif result_machine.result_final == 1:
+
+            result_machine.image_kirby.clip_composite_draw(int(result_machine.frame) * 100, 0 * 100, 100, 100, 0, '',
+                                                           100, 95, 100 * 2, 100 * 2)
+            result_machine.image_DDD.clip_composite_draw(int(result_machine.frame + 4) * 100, 0 * 100, 100, 100, 0, '',
+                                                         680, 95 + 45, 100 * 2, 100 * 2)
+        else:
+            if result_machine.kirby_lose_trigger:
+                result_machine.image_kirby.clip_composite_draw(int(result_machine.frame + 4) * 100, 0 * 100, 100, 100,
+                                                               0, '',100, 95, 100 * 2, 100 * 2)
+            else:
+                result_machine.image_kirby.clip_composite_draw(int(3 + 4) * 100, 0 * 100, 100, 100,
+                                                               0, '',100, 95, 100 * 2, 100 * 2)
+
+            result_machine.image_DDD.clip_composite_draw(int(result_machine.frame) * 100, 0 * 100, 100, 100, 0, '',
+                                                         680, 95 + 45, 100 * 2, 100 * 2)
+
+
         for _ in range(3):
             result_machine.image_score_dee.clip_composite_draw(0, 4 * 70, 70, 70, 0, '', 200 - (_ * 80), 350, 70 * 2,
                                                                70 * 2)
@@ -354,7 +377,19 @@ class Final_result:
 
         result_machine.dis_DDD.clip_composite_draw(0, 0, 150, 30, 0, 'h', 750 - result_machine.text_x, 250, 150 * 2,
                                                    30 * 2)
-        result_machine.font.draw(680 - result_machine.text_x, 250, f'{result_machine.total_p2}m', (14, 14, 14))
+        result_machine.font.draw(680 - result_machine.text_x, 250, f'{result_machine.total_p2}m', (14, 14, 14)) \
+
+        if result_machine.result_final == 0:
+            result_machine.result_draw.draw(120, result_machine.text_y2)
+            result_machine.result_draw.draw(680, result_machine.text_y2)
+        elif result_machine.result_final == 1:
+            result_machine.result_win.draw(120, result_machine.text_y2)
+            result_machine.result_lose.draw(680, result_machine.text_y2)
+        else:
+            result_machine.result_lose.draw(120, result_machine.text_y2)
+            result_machine.result_win.draw(680, result_machine.text_y2)
+
+        result_machine.font_s.draw(335,530-result_machine.text_y2,'restart? >>> R', (14, 14, 14))
 
         pass
 
@@ -400,6 +435,7 @@ class Result_machine:
         self.result_text = load_image('./texture/result_text.png')
         self.result_win = load_image('./texture/result_win.png')
         self.result_lose = load_image('./texture/result_lose.png')
+        self.result_draw = load_image('./texture/result_draw.png')
 
         self.dis_kirby = load_image('./texture/Distance_UI_kirby.png')
         self.dis_DDD = load_image('./texture/Distance_UI_DDD.png')

@@ -8,5 +8,5 @@ player_Kirby = None
 player_DDD = None
 distance_sign = None
 turn = 0
-score = {'p1':[20,20,20],'p2':[20,20,20]}
+score = {'p1':[40,10,30],'p2':[50,70,80]}
 result_machine=None
