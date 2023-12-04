@@ -17,6 +17,7 @@ RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
+font_move = 26
 
 def time_out(e):
     return e[0] == 'TIME_OUT'
@@ -82,8 +83,8 @@ class Score1:
     @staticmethod
     def exit(result_machine, e):
 
-        result_machine.total_p1 += server.score['p1'][0]
-        result_machine.total_p2 += server.score['p2'][0]
+        result_machine.total_p1 = round(result_machine.total_p1 + server.score['p1'][0], 1)
+        result_machine.total_p2 = round(result_machine.total_p2 + server.score['p2'][0], 1)
 
         print('result Score1 Exit')
 
@@ -117,13 +118,13 @@ class Score1:
         # 커비 1라운드
         result_machine.image_score_dee.clip_composite_draw(0, 4 * 70, 70, 70, 0, '', result_machine.dee_x, 350, 70 * 2,
                                                            70 * 2)
-        result_machine.font_s.draw(result_machine.dee_x - 19, 370, f'{server.score["p1"][0]}m', (14, 14, 14))
+        result_machine.font_s.draw(result_machine.dee_x - font_move, 370, f'{server.score["p1"][0]}m', (14, 14, 14))
 
         # 디디디 1라운드
         result_machine.image_score_dee.clip_composite_draw(70, 4 * 70, 70, 70, 0, '', 800 - result_machine.dee_x, 350,
                                                            70 * 2,
                                                            70 * 2)
-        result_machine.font_s.draw(800 - result_machine.dee_x - 19, 370, f'{server.score["p2"][0]}m', (14, 14, 14))
+        result_machine.font_s.draw(800 - result_machine.dee_x - font_move, 370, f'{server.score["p2"][0]}m', (14, 14, 14))
 
         # 전체합산점수들
 
@@ -150,8 +151,8 @@ class Score2:
     @staticmethod
     def exit(result_machine, e):
 
-        result_machine.total_p1 += server.score['p1'][1]
-        result_machine.total_p2 += server.score['p2'][1]
+        result_machine.total_p1 = round(result_machine.total_p1 + server.score['p1'][1], 1)
+        result_machine.total_p2 = round(result_machine.total_p2 + server.score['p2'][1], 1)
 
         print('result Score1 Exit')
 
@@ -184,23 +185,22 @@ class Score2:
         # 커비 1라운드
         result_machine.image_score_dee.clip_composite_draw(0, 4 * 70, 70, 70, 0, '', 200, 350, 70 * 2,
                                                            70 * 2)
-        result_machine.font_s.draw(200 - 19, 370, f'{server.score["p1"][0]}m', (14, 14, 14))
+        result_machine.font_s.draw(200 - font_move, 370, f'{server.score["p1"][0]}m', (14, 14, 14))
 
         # 디디디 1라운드
         result_machine.image_score_dee.clip_composite_draw(70, 4 * 70, 70, 70, 0, '', 600, 350, 70 * 2,
                                                            70 * 2)
-        result_machine.font_s.draw(600 - 19, 370, f'{server.score["p2"][0]}m', (14, 14, 14))
+        result_machine.font_s.draw(600 - font_move, 370, f'{server.score["p2"][0]}m', (14, 14, 14))
 
         # 커비 2라운드
         result_machine.image_score_dee.clip_composite_draw(0, 4 * 70, 70, 70, 0, '', result_machine.dee_x, 350, 70 * 2,
                                                            70 * 2)
-        result_machine.font_s.draw(result_machine.dee_x - 19, 370, f'{server.score["p1"][1]}m', (14, 14, 14))
+        result_machine.font_s.draw(result_machine.dee_x - font_move, 370, f'{server.score["p1"][1]}m', (14, 14, 14))
 
         # 디디디 2라운드
         result_machine.image_score_dee.clip_composite_draw(70, 4 * 70, 70, 70, 0, '', 800 - result_machine.dee_x, 350,
-                                                           70 * 2,
-                                                           70 * 2)
-        result_machine.font_s.draw(800 - result_machine.dee_x - 19, 370, f'{server.score["p2"][1]}m', (14, 14, 14))
+                                                           70 * 2,70 * 2)
+        result_machine.font_s.draw(800 - result_machine.dee_x - font_move, 370, f'{server.score["p2"][1]}m', (14, 14, 14))
 
         # 전체합산점수들
 
@@ -227,8 +227,8 @@ class Score3:
     @staticmethod
     def exit(result_machine, e):
 
-        result_machine.total_p1 += server.score['p1'][2]
-        result_machine.total_p2 += server.score['p2'][2]
+        result_machine.total_p1 = round(result_machine.total_p1 + server.score['p1'][2], 1)
+        result_machine.total_p2 = round(result_machine.total_p2 + server.score['p2'][2], 1)
 
         print('result Score1 Exit')
 
@@ -261,23 +261,22 @@ class Score3:
         for _ in range(2):
             result_machine.image_score_dee.clip_composite_draw(0, 4 * 70, 70, 70, 0, '', 200 - (_ * 80), 350, 70 * 2,
                                                                70 * 2)
-            result_machine.font_s.draw(200 - (_ * 80) - 19, 370, f'{server.score["p1"][_]}m', (14, 14, 14))
+            result_machine.font_s.draw(200 - (_ * 80) - font_move, 370, f'{server.score["p1"][_]}m', (14, 14, 14))
 
         for _ in range(2):
             result_machine.image_score_dee.clip_composite_draw(70, 4 * 70, 70, 70, 0, '', 600 + (_ * 80), 350, 70 * 2,
                                                                70 * 2)
-            result_machine.font_s.draw(600 + (_ * 80) - 19, 370, f'{server.score["p2"][_]}m', (14, 14, 14))
+            result_machine.font_s.draw(600 + (_ * 80) - font_move, 370, f'{server.score["p2"][_]}m', (14, 14, 14))
 
         # 커비 3라운드
         result_machine.image_score_dee.clip_composite_draw(0, 4 * 70, 70, 70, 0, '', result_machine.dee_x, 350, 70 * 2,
                                                            70 * 2)
-        result_machine.font_s.draw(result_machine.dee_x - 19, 370, f'{server.score["p1"][2]}m', (14, 14, 14))
+        result_machine.font_s.draw(result_machine.dee_x - font_move, 370, f'{server.score["p1"][2]}m', (14, 14, 14))
 
         # 디디디 3라운드
         result_machine.image_score_dee.clip_composite_draw(70, 4 * 70, 70, 70, 0, '', 800 - result_machine.dee_x, 350,
-                                                           70 * 2,
-                                                           70 * 2)
-        result_machine.font_s.draw(800 - result_machine.dee_x - 19, 370, f'{server.score["p2"][2]}m', (14, 14, 14))
+                                                           70 * 2,70 * 2)
+        result_machine.font_s.draw(800 - result_machine.dee_x - font_move, 370, f'{server.score["p2"][2]}m', (14, 14, 14))
 
         # 전체합산점수들
 
@@ -362,22 +361,22 @@ class Final_result:
         for _ in range(3):
             result_machine.image_score_dee.clip_composite_draw(0, 4 * 70, 70, 70, 0, '', 200 - (_ * 80), 350, 70 * 2,
                                                                70 * 2)
-            result_machine.font_s.draw(200 - (_ * 80) - 19, 370, f'{server.score["p1"][_]}m', (14, 14, 14))
+            result_machine.font_s.draw(200 - (_ * 80) - font_move, 370, f'{server.score["p1"][_]}m', (14, 14, 14))
 
         for _ in range(3):
             result_machine.image_score_dee.clip_composite_draw(70, 4 * 70, 70, 70, 0, '', 600 + (_ * 80), 350, 70 * 2,
                                                                70 * 2)
-            result_machine.font_s.draw(600 + (_ * 80) - 19, 370, f'{server.score["p2"][_]}m', (14, 14, 14))
+            result_machine.font_s.draw(600 + (_ * 80) - font_move, 370, f'{server.score["p2"][_]}m', (14, 14, 14))
 
         # 전체합산점수들
 
         result_machine.dis_kirby.clip_composite_draw(0, 0, 150, 30, 0, '', 50 + result_machine.text_x, 250, 150 * 2,
                                                      30 * 2)
-        result_machine.font.draw(-80 + result_machine.text_x, 250, f'{result_machine.total_p1}m', (14, 14, 14))
+        result_machine.font.draw(-80 + result_machine.text_x, 250, f'{round(result_machine.total_p1, 1)}m', (14, 14, 14))
 
         result_machine.dis_DDD.clip_composite_draw(0, 0, 150, 30, 0, 'h', 750 - result_machine.text_x, 250, 150 * 2,
                                                    30 * 2)
-        result_machine.font.draw(680 - result_machine.text_x, 250, f'{result_machine.total_p2}m', (14, 14, 14)) \
+        result_machine.font.draw(680 - result_machine.text_x, 250, f'{round(result_machine.total_p2, 1)}m', (14, 14, 14)) \
 
         if result_machine.result_final == 0:
             result_machine.result_draw.draw(120, result_machine.text_y2)
@@ -446,8 +445,8 @@ class Result_machine:
         self.total_p1 = 0
         self.total_p2 = 0
 
-        self.font = load_font('ENCR10B.TTF', 24)
-        self.font_s = load_font('ENCR10B.TTF', 18)
+        self.font = load_font('ENCR10B.TTF', 22)
+        self.font_s = load_font('ENCR10B.TTF', 16)
 
     def update(self):
         self.state_machine.update()

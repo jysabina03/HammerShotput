@@ -56,6 +56,9 @@ class Idle:
 
     @staticmethod
     def do(ball):
+        if server.turn==5:
+            ball.state_machine.handle_event(('START_TURN', 0))
+
         ball.frame = (ball.frame + FRAMES_PER_ACTION_SLOW * ACTION_PER_TIME * game_framework.frame_time) % 2
         if ball.x > 0:
             ball.x -= ball.x / 10 * FRAMES_PER_ACTION_FAST * game_framework.frame_time+0.5;
@@ -116,7 +119,7 @@ class fly_away:  # 1. 날라감
         print(f'ball - fly_away Exit ㅡ 착지 위치: {ball.x} / 미터 환산: {ball.x / 25}')
 
         score_dee = Score_dee(server.turn, ball.x, ball.dx)
-        game_world.add_object(score_dee, 3)
+        game_world.add_object(score_dee, 2)
 
     @staticmethod
     def do(ball):

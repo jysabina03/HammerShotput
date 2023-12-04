@@ -1,3 +1,5 @@
+import random
+
 from pico2d import load_image, get_time, get_events
 from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_SPACE, SDLK_DOWN, SDLK_UP, SDL_Event
 import game_framework
@@ -11,7 +13,6 @@ RUN_SPEED_KMPH = 3  # Km / Hour      #아주 조금 전진(공이 가까움...)
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
-
 
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
@@ -105,6 +106,7 @@ class Set_angle:  # 0. 각도조절
         if e[0] == 'START_TURN':
             player.action = 0
             player.frame = 0
+            player.anglespeed = round(random.uniform(1.5, 3.0), 1)
 
         print(f'{player.type} - Set_angle Enter')
 
@@ -113,6 +115,7 @@ class Set_angle:  # 0. 각도조절
         if e[1].key == SDLK_SPACE:
             print(f'Set_angle Exit ㅡ 각도: {player.hammer_angle}')
         elif e[1].type == SDL_KEYDOWN:
+            player.anglespeed = round(random.uniform(1.5, 3.0), 1)
             if e[1].key == SDLK_DOWN:
                 player.is_down_key_pressed = True
                 player.is_up_key_pressed = False
@@ -129,14 +132,14 @@ class Set_angle:  # 0. 각도조절
         if player.is_up_key_pressed:
             if player.hammer_angle < 90:
                 player.hammer_angle = (
-                        player.hammer_angle + FRAMES_PER_ACTION_FAST * ACTION_PER_TIME * game_framework.frame_time)
+                        player.hammer_angle + player.anglespeed * FRAMES_PER_ACTION_FAST * ACTION_PER_TIME * game_framework.frame_time)
                 if player.hammer_angle > 90:
                     player.hammer_angle = 90
 
         if player.is_down_key_pressed:
             if player.hammer_angle > 0:
                 player.hammer_angle = (
-                        player.hammer_angle + FRAMES_PER_ACTION_FAST * -1 * ACTION_PER_TIME * game_framework.frame_time)
+                        player.hammer_angle + player.anglespeed * FRAMES_PER_ACTION_FAST * -1 * ACTION_PER_TIME * game_framework.frame_time)
                 if player.hammer_angle < 0:
                     player.hammer_angle = 0
 

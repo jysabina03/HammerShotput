@@ -41,6 +41,9 @@ def init():
     global wadlle_ball
     running = True
 
+    server.turn=0
+    server.score = {'p1':[0,0,0],'p2':[0,0,0]}
+
     server.grass = Grass(30)
     game_world.add_object(server.grass, 1)
 
@@ -61,12 +64,13 @@ def init():
     game_world.add_object(server.distance_sign, 2)
 
     server.player_Kirby.state_machine.handle_event(('START_TURN', 0))
+
 def finish():
     game_world.clear()
     pass
 
 def update():
-    if server.turn >1:
+    if server.turn >=6:
         game_framework.change_mode(result_mode)
     game_world.update()
 

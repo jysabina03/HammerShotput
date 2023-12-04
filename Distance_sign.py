@@ -16,23 +16,15 @@ class Distance_sign:
         pass
 
     def draw(self):
-
         self.dis_now.clip_composite_draw(0, 0, 150, 30, 0, '', 75, 550, 150, 30)
         self.font.draw(10, 550, f'now {round(server.wadlle_ball.x / 25, 1)}m', (14, 14, 14))
 
-        p1_score = 0
-        for _ in server.score['p1']:
-            p1_score += _
+        if server.turn <6:
+            self.dis_kirby.clip_composite_draw(0, 0, 150, 30, 0, '', 75, 450, 150, 30)
+            self.font.draw(10, 450, f'P1: {round(server.score["p1"][int(server.turn / 2)], 1)}m', (14, 14, 14))
 
-        self.dis_kirby.clip_composite_draw(0, 0, 150, 30, 0, '', 75, 450, 150, 30)
-        self.font.draw(10, 450, f'P1: {round(p1_score, 1)}m', (14, 14, 14))
-
-        p2_score = 0
-        for _ in server.score['p2']:
-            p2_score += _
-
-        self.dis_DDD.clip_composite_draw(0, 0, 150, 30, 0, '', 75, 350, 150, 30)
-        self.font.draw(10, 350, f'P2: {round(p2_score, 1)}m', (14, 14, 14))
+            self.dis_DDD.clip_composite_draw(0, 0, 150, 30, 0, '', 75, 350, 150, 30)
+            self.font.draw(10, 350, f'P2: {round(server.score["p2"][int((server.turn - 1) / 2)], 1)}m', (14, 14, 14))
 
     # for i in range(0, int(server.wadlle_ball.x + 1000), 250):
 

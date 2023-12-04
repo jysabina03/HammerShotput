@@ -45,6 +45,9 @@ def init():
 
 
 def finish():
+    game_world.clear()
+    server.score['p1'],server.score['p2']=[],[]
+    server.turn=0
     pass
 
 def update():
