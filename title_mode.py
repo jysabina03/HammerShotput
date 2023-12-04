@@ -2,12 +2,14 @@ from pico2d import load_image, get_events, clear_canvas, update_canvas, get_time
 from sdl2 import SDLK_ESCAPE, SDL_KEYDOWN, SDL_QUIT, SDLK_SPACE, SDL_MOUSEMOTION, SDL_MOUSEBUTTONDOWN
 
 import game_framework
+import howplay_mode
 import play_mode
 
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION_FAST = 12
 FRAMES_PER_ACTION_SLOW = 0.5
+
 
 
 def init():
@@ -53,7 +55,8 @@ def handle_events():
             if button_onoff['play']:
                 game_framework.change_mode(play_mode)
             elif button_onoff['how']:
-                pass
+                game_framework.change_mode(howplay_mode)
+
 
     pass
 
