@@ -1,6 +1,6 @@
 import random
 
-from pico2d import load_image, get_time, get_events
+from pico2d import load_image, get_time, get_events, load_wav
 from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_SPACE, SDLK_DOWN, SDLK_UP, SDL_Event
 import game_framework
 import math
@@ -110,9 +110,12 @@ class Set_angle:  # 0. 각도조절
 
         print(f'{player.type} - Set_angle Enter')
 
+
     @staticmethod
     def exit(player, e):
         if e[1].key == SDLK_SPACE:
+            player.sound_angle.play()
+
             print(f'Set_angle Exit ㅡ 각도: {player.hammer_angle}')
         elif e[1].type == SDL_KEYDOWN:
             player.anglespeed = round(random.uniform(2.0, 4.0), 1)
@@ -184,12 +187,16 @@ class Charging:  # 1. 좌우연타차징
         if e[0] == 'TIME_OUT':
             print(f'Charging Exit - 차지:{player.hammer_charge}')
         elif e[1].type == SDL_KEYDOWN:
+            player.sound_charge2.play()
+
+            player.sound_charge1.set_volume(player.sound_charge1.get_volume()+2)
             if e[1].key == SDLK_RIGHT:
                 if player.key_R is False:
                     player.key_R = True
                     player.key_L = False
                     player.hammer_charge += 1
                     player.frame += 0.7
+                    #player.sound_charge1.play()
                 print('오른쪽 키 눌림')
             elif e[1].key == SDLK_LEFT:
                 if player.key_L is False:
@@ -197,6 +204,7 @@ class Charging:  # 1. 좌우연타차징
                     player.key_L = True
                     player.hammer_charge += 1
                     player.frame += 0.7
+                    #player.sound_charge2.play()
 
     @staticmethod
     def do(player):
@@ -239,6 +247,11 @@ class Timing:  # 2-1 타이밍 맞춰서
         if player.acc > 100:
             player.acc -= (player.acc - 100)
         player.hammer_accuracy = player.acc
+
+        if player.acc > 90:
+            player.sound_shot1.play()
+        else:
+            player.sound_shot2.play()
         print(f'Timing Exit - 정확도: {player.hammer_accuracy}')
 
     @staticmethod
@@ -392,6 +405,23 @@ class Player:
         else:
             self.image = load_image('./texture/sp_dedede.png')
             self.type = 1
+
+        #각도 결정 사운드
+        self.sound_angle = load_wav('./sound/angle.wav')
+        self.sound_angle.set_volume(70)
+
+        #차지 사운드
+        self.sound_charge1 = load_wav('./sound/charge1.wav')
+        self.sound_charge1.set_volume(20)
+        self.sound_charge2 = load_wav('./sound/charge2.wav')
+        self.sound_charge2.set_volume(20)
+
+        #슈팅 사운드
+        self.sound_shot1 = load_wav('./sound/shot1.wav')
+        self.sound_shot1.set_volume(70)
+        self.sound_shot2 = load_wav('./sound/shot2.wav')
+        self.sound_shot2.set_volume(70)
+
 
         self.state_machine = StateMachine(self)
         self.state_machine.start()

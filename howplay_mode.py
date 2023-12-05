@@ -1,4 +1,4 @@
-from pico2d import load_image, get_events, clear_canvas, update_canvas, get_time, pico2d
+from pico2d import load_image, get_events, clear_canvas, update_canvas, get_time, pico2d, load_wav
 from sdl2 import SDLK_ESCAPE, SDL_KEYDOWN, SDL_QUIT, SDLK_SPACE, SDLK_1
 
 import game_framework
@@ -17,12 +17,15 @@ def init():
     global button_onoff
 
     global buttonX, buttonY
-    global cur_mouse_x, cur_mouse_y, frame1,frame2
+    global cur_mouse_x, cur_mouse_y, frame1,frame2,sound_esc
 
     frame1, frame2 = 0,0
 
     image_how_to_play= load_image('./texture/how_to_play.png')
     image_kirby = load_image('./texture/sp_kirby.png')
+
+    sound_esc = load_wav('./sound/cancel.wav')
+    sound_esc.set_volume(70)
 
 
     pass
@@ -37,7 +40,9 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+            sound_esc.play()
             game_framework.change_mode(title_mode)
+
 
 
     pass

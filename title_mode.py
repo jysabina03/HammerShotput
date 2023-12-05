@@ -21,7 +21,7 @@ def init():
     global buttonX, buttonY,button_mouseover
     global cur_mouse_x, cur_mouse_y, frame
 
-    global bgm, mouseover
+    global bgm, mouseover,sound_button
 
     frame = 0
 
@@ -48,6 +48,9 @@ def init():
     mouseover = load_wav('./sound/mouseover.wav')
     mouseover.set_volume(70)
 
+    sound_button = load_wav('./sound/title_button.wav')
+    sound_button.set_volume(60)
+
     pass
 
 
@@ -69,8 +72,10 @@ def handle_events():
         elif event.type == SDL_MOUSEBUTTONDOWN:
             if button_onoff['play']:
                 game_framework.change_mode(play_mode)
+                sound_button.play()
             elif button_onoff['how']:
                 game_framework.change_mode(howplay_mode)
+                sound_button.play()
 
 
     pass
