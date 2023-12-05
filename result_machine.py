@@ -1,4 +1,4 @@
-from pico2d import load_image, get_time, get_events, load_font
+from pico2d import load_image, get_time, get_events, load_font, load_wav, load_music
 from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_SPACE, SDLK_DOWN, SDLK_UP, SDL_Event
 import game_framework
 import math
@@ -80,9 +80,9 @@ class Score1:
 
         result_machine.dee_x = -20
 
+        result_machine.sound_play = True
     @staticmethod
     def exit(result_machine, e):
-
         result_machine.total_p1 = round(result_machine.total_p1 + server.score['p1'][0], 1)
         result_machine.total_p2 = round(result_machine.total_p2 + server.score['p2'][0], 1)
 
@@ -91,10 +91,12 @@ class Score1:
     @staticmethod
     def do(result_machine):
 
+        if int(result_machine.dee_x)==80 and result_machine.sound_play:
+            result_machine.sound_play=False
+            result_machine.sound_result_dis.play()
         if result_machine.dee_x < 200:
             result_machine.dee_x += 3 * RUN_SPEED_PPS * game_framework.frame_time
         else:
-
             result_machine.state_machine.handle_event(('TIME_OUT', 0))
 
         result_machine.frame = (
@@ -148,6 +150,8 @@ class Score2:
 
         result_machine.dee_x = -20
 
+        result_machine.sound_play = True
+
     @staticmethod
     def exit(result_machine, e):
 
@@ -159,6 +163,9 @@ class Score2:
     @staticmethod
     def do(result_machine):
 
+        if int(result_machine.dee_x)==40 and result_machine.sound_play:
+            result_machine.sound_play=False
+            result_machine.sound_result_dis.play()
         if result_machine.dee_x < 120:
             result_machine.dee_x += 2 * RUN_SPEED_PPS * game_framework.frame_time
         else:
@@ -224,6 +231,7 @@ class Score3:
 
         result_machine.dee_x = -20
 
+        result_machine.sound_play = True
     @staticmethod
     def exit(result_machine, e):
 
@@ -234,7 +242,9 @@ class Score3:
 
     @staticmethod
     def do(result_machine):
-
+        if int(result_machine.dee_x)==8 and result_machine.sound_play:
+            result_machine.sound_play=False
+            result_machine.sound_result_dis.play()
         if result_machine.dee_x < 40:
             result_machine.dee_x += RUN_SPEED_PPS * game_framework.frame_time
         else:
@@ -309,6 +319,7 @@ class Final_result:
 
         result_machine.kirby_lose_trigger = True
 
+        result_machine.sound_result.play()
     @staticmethod
     def exit(result_machine, e):
         print('result Score1 Exit')
@@ -447,6 +458,22 @@ class Result_machine:
 
         self.font = load_font('ENCR10B.TTF', 22)
         self.font_s = load_font('ENCR10B.TTF', 16)
+
+
+
+        #결과 발표 배경음악
+        self.bgm = load_music('./sound/bgm.mp3')
+        self.bgm.set_volume(40)
+        self.bgm.repeat_play()
+
+        #결과 발표 사운드
+        self.sound_result = load_wav('./sound/result.wav')
+        self.sound_result.set_volume(50)
+
+        # 결과 합산 사운드
+        self.sound_result_dis = load_wav('./sound/result_dis.wav')
+        self.sound_result_dis.set_volume(30)
+
 
     def update(self):
         self.state_machine.update()
