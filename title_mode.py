@@ -1,5 +1,7 @@
-from pico2d import load_image, get_events, clear_canvas, update_canvas, get_time, get_canvas_height
+from pico2d import load_image, get_events, clear_canvas, update_canvas, get_time, get_canvas_height, load_music, \
+    load_wav
 from sdl2 import SDLK_ESCAPE, SDL_KEYDOWN, SDL_QUIT, SDLK_SPACE, SDL_MOUSEMOTION, SDL_MOUSEBUTTONDOWN
+
 
 import game_framework
 import howplay_mode
@@ -16,8 +18,10 @@ def init():
     global BG_image, grass1, button_play, button_how, image_kirby, image_DDD
     global button_onoff
 
-    global buttonX, buttonY
+    global buttonX, buttonY,button_mouseover
     global cur_mouse_x, cur_mouse_y, frame
+
+    global bgm, mouseover
 
     frame = 0
 
@@ -34,10 +38,21 @@ def init():
     button_how = (load_image('./texture/Title_button_how_on.png'), load_image('./texture/Title_button_how_off.png'))
 
     button_onoff = {'play': False, 'how': False}
+    button_mouseover = False
+
+
+    bgm = load_music('./sound/title_bgm.mp3')
+    bgm.set_volume(50)
+    bgm.repeat_play()
+
+    mouseover = load_wav('./sound/mouseover.wav')
+    mouseover.set_volume(70)
+
     pass
 
 
 def finish():
+    bgm.stop()
     pass
 
 
@@ -62,16 +77,25 @@ def handle_events():
 
 
 def update():
+    global button_mouseover
+
+
+
     if buttonX + 130 > cur_mouse_x > buttonX - 130 and cur_mouse_y < buttonY[0] + 37 and cur_mouse_y > \
             buttonY[0] - 37:
         button_onoff['play'] = True
-    else:
-        button_onoff['play'] = False
-
-    if buttonX + 130 > cur_mouse_x > buttonX - 130 and cur_mouse_y < buttonY[1] + 37 and cur_mouse_y > \
+        if button_mouseover is False:
+            mouseover.play(1)
+        button_mouseover = True
+    elif buttonX + 130 > cur_mouse_x > buttonX - 130 and cur_mouse_y < buttonY[1] + 37 and cur_mouse_y > \
             buttonY[1] - 37:
         button_onoff['how'] = True
+        if button_mouseover is False:
+            mouseover.play(1)
+        button_mouseover = True
     else:
+        button_onoff['play'] = False
+        button_mouseover = False
         button_onoff['how'] = False
 
     pass
