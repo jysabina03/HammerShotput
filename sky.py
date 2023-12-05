@@ -1,4 +1,4 @@
-from pico2d import load_image, get_canvas_width, get_canvas_height, clamp
+from pico2d import load_image, get_canvas_width, get_canvas_height, clamp, load_music
 import server
 
 
@@ -13,6 +13,11 @@ class Sky:
         self.ch = get_canvas_height()
         self.w = self.image.w
         self.h = self.image.h
+
+        self.bgm = load_music('./sound/bgm2.mp3')
+        self.bgm.set_volume(15)
+        self.bgm.repeat_play()
+
 
     def draw(self):
         self.image.clip_draw_to_origin(self.q1l, 0, self.q1w, 600, 0, 0)
