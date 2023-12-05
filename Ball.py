@@ -126,14 +126,15 @@ class fly_away:  # 1. 날라감
     def do(ball):
         # 프레임타임으로 시간 단위, x, y 포물선 좌표 계산
 
-        if int(ball.frame) ==0:
-            ball.sound_fly.play()
+
 
         ball.x += ball.xspeed * FRAMES_PER_ACTION_FAST * game_framework.frame_time
         ball.yspeed += ball.gravity * FRAMES_PER_ACTION_FAST * game_framework.frame_time
         ball.y += ball.yspeed * FRAMES_PER_ACTION_FAST * game_framework.frame_time
 
         ball.sound_fly.set_volume(10 + abs(int(ball.yspeed)))
+        if int(ball.frame) ==0 and ball.y > 80:
+            ball.sound_fly.play()
 
         if ball.y <= 0:
             ball.state_machine.handle_event(('TOUCH_THE_FLOOR', 0))

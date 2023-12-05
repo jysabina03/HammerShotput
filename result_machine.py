@@ -118,7 +118,7 @@ class Score1:
 
         # 라운드별 점수들
         # 커비 1라운드
-        result_machine.image_score_dee.clip_composite_draw(0, 4 * 70, 70, 70, 0, '', result_machine.dee_x, 350, 70 * 2,
+        result_machine.image_score_dee.clip_composite_draw(0, 4 * 70, 70, 70, 0, 'h', result_machine.dee_x, 350, 70 * 2,
                                                            70 * 2)
         result_machine.font_s.draw(result_machine.dee_x - font_move, 370, f'{server.score["p1"][0]}m', (14, 14, 14))
 
@@ -190,7 +190,7 @@ class Score2:
 
         # 라운드별 점수들
         # 커비 1라운드
-        result_machine.image_score_dee.clip_composite_draw(0, 4 * 70, 70, 70, 0, '', 200, 350, 70 * 2,
+        result_machine.image_score_dee.clip_composite_draw(0, 4 * 70, 70, 70, 0, 'h', 200, 350, 70 * 2,
                                                            70 * 2)
         result_machine.font_s.draw(200 - font_move, 370, f'{server.score["p1"][0]}m', (14, 14, 14))
 
@@ -200,7 +200,7 @@ class Score2:
         result_machine.font_s.draw(600 - font_move, 370, f'{server.score["p2"][0]}m', (14, 14, 14))
 
         # 커비 2라운드
-        result_machine.image_score_dee.clip_composite_draw(0, 4 * 70, 70, 70, 0, '', result_machine.dee_x, 350, 70 * 2,
+        result_machine.image_score_dee.clip_composite_draw(0, 4 * 70, 70, 70, 0, 'h', result_machine.dee_x, 350, 70 * 2,
                                                            70 * 2)
         result_machine.font_s.draw(result_machine.dee_x - font_move, 370, f'{server.score["p1"][1]}m', (14, 14, 14))
 
@@ -269,7 +269,7 @@ class Score3:
 
         # 라운드별 점수들
         for _ in range(2):
-            result_machine.image_score_dee.clip_composite_draw(0, 4 * 70, 70, 70, 0, '', 200 - (_ * 80), 350, 70 * 2,
+            result_machine.image_score_dee.clip_composite_draw(0, 4 * 70, 70, 70, 0, 'h', 200 - (_ * 80), 350, 70 * 2,
                                                                70 * 2)
             result_machine.font_s.draw(200 - (_ * 80) - font_move, 370, f'{server.score["p1"][_]}m', (14, 14, 14))
 
@@ -279,7 +279,7 @@ class Score3:
             result_machine.font_s.draw(600 + (_ * 80) - font_move, 370, f'{server.score["p2"][_]}m', (14, 14, 14))
 
         # 커비 3라운드
-        result_machine.image_score_dee.clip_composite_draw(0, 4 * 70, 70, 70, 0, '', result_machine.dee_x, 350, 70 * 2,
+        result_machine.image_score_dee.clip_composite_draw(0, 4 * 70, 70, 70, 0, 'h', result_machine.dee_x, 350, 70 * 2,
                                                            70 * 2)
         result_machine.font_s.draw(result_machine.dee_x - font_move, 370, f'{server.score["p1"][2]}m', (14, 14, 14))
 
@@ -370,7 +370,7 @@ class Final_result:
 
 
         for _ in range(3):
-            result_machine.image_score_dee.clip_composite_draw(0, 4 * 70, 70, 70, 0, '', 200 - (_ * 80), 350, 70 * 2,
+            result_machine.image_score_dee.clip_composite_draw(0, 4 * 70, 70, 70, 0, 'h', 200 - (_ * 80), 350, 70 * 2,
                                                                70 * 2)
             result_machine.font_s.draw(200 - (_ * 80) - font_move, 370, f'{server.score["p1"][_]}m', (14, 14, 14))
 
