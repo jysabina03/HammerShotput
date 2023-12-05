@@ -1,6 +1,6 @@
 import math
 
-from pico2d import load_image, get_time, clamp
+from pico2d import load_image, get_time, clamp, load_wav
 from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_SPACE
 
 import game_framework
@@ -56,22 +56,21 @@ class Idle:
 
     @staticmethod
     def do(ball):
-        if server.turn==5:
+        if server.turn == 5:
             ball.state_machine.handle_event(('START_TURN', 0))
 
         ball.frame = (ball.frame + FRAMES_PER_ACTION_SLOW * ACTION_PER_TIME * game_framework.frame_time) % 2
         if ball.x > 0:
-            ball.x -= ball.x / 10 * FRAMES_PER_ACTION_FAST * game_framework.frame_time+0.5;
+            ball.x -= ball.x / 10 * FRAMES_PER_ACTION_FAST * game_framework.frame_time + 0.5;
 
         else:
             ball.state_machine.handle_event(('START_TURN', 0))
         pass
 
-
     @staticmethod
     def draw(ball):
         ball.image.clip_composite_draw(int(ball.frame) * 26, (2 - ball.action) * 26, 26, 26, 0, '',
-                                       ball.normal_x-ball.x, ball.normal_y, 26 * 2, 26 * 2)
+                                       ball.normal_x - ball.x, ball.normal_y, 26 * 2, 26 * 2)
         pass
 
 
@@ -118,6 +117,8 @@ class fly_away:  # 1. 날라감
         ball.Landing_position = ball.x
         print(f'ball - fly_away Exit ㅡ 착지 위치: {ball.x} / 미터 환산: {ball.x / 25}')
 
+        ball.sound_boing.set_volume(50)
+        ball.sound_boing.play()
         score_dee = Score_dee(server.turn, ball.x, ball.dx)
         game_world.add_object(score_dee, 2)
 
@@ -125,18 +126,26 @@ class fly_away:  # 1. 날라감
     def do(ball):
         # 프레임타임으로 시간 단위, x, y 포물선 좌표 계산
 
-        ball.x += ball.xspeed * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
-        ball.yspeed += ball.gravity * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
-        ball.y += ball.yspeed * FRAMES_PER_ACTION_FAST * game_framework.frame_time;
+        if int(ball.frame) ==0:
+            ball.sound_fly.play()
+
+        ball.x += ball.xspeed * FRAMES_PER_ACTION_FAST * game_framework.frame_time
+        ball.yspeed += ball.gravity * FRAMES_PER_ACTION_FAST * game_framework.frame_time
+        ball.y += ball.yspeed * FRAMES_PER_ACTION_FAST * game_framework.frame_time
+
+        ball.sound_fly.set_volume(10 + abs(int(ball.yspeed)))
 
         if ball.y <= 0:
             ball.state_machine.handle_event(('TOUCH_THE_FLOOR', 0))
 
         ball.frame = (ball.frame + FRAMES_PER_ACTION_FAST * ACTION_PER_TIME * game_framework.frame_time) % 8
+
+
         pass
 
     @staticmethod
     def draw(ball):
+
         ball.image.clip_composite_draw(int(ball.frame) * 26, (2 - ball.action) * 26, 26, 26, 0, '',
                                        ball.dx, ball.dy, 26 * 2, 26 * 2)
         pass
@@ -151,6 +160,7 @@ class landing:  # 2. 착지
         ball.land_x = 0
         ball.land_y = 0
         ball.xspeed = clamp(0, ball.xspeed, 25)
+
 
         ball.landing_time = get_time()
         print('ball - landing Enter')
@@ -258,6 +268,10 @@ class Ball:
         self.state_machine.start()
 
         self.shoot = False
+
+        self.sound_fly = load_wav('./sound/fly.wav')
+        self.sound_boing = load_wav('./sound/boing.wav')
+        self.sound_boing.set_volume(50)
 
     def receive_speed(self, hammer_xspeed, hammer_yspeed, hammer_angle):
         print(f"스피드 수신 - x: {hammer_xspeed}, y: {hammer_yspeed}, angle: {hammer_angle}")
